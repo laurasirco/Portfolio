@@ -176,7 +176,7 @@ p.social a.email {
 }
 #page1 {
   text-align: center;
-  background: url('../img/macbook-juice.jpg') center center no-repeat;
+  background: url('../img/top.png') center center no-repeat;
   background-size: cover;
   color: #fff;
 }
@@ -186,7 +186,7 @@ p.social a.email {
   color: #fff;
 }
 #page1 p {
-  font-size: 20px;
+  font-size: 14px;
 }
 #page1 .icon {
   position: absolute;
@@ -528,8 +528,8 @@ body.disabled-onepage-scroll .onepage-wrapper section {
 }
 /* scaffolding */
 body {
-  font-family: "Cardo", "Times New Roman", Times, serif;
-  font-size: 16px;
+  font-family: "Lora", "Times New Roman", Times, serif;
+  font-size: 13px;
   line-height: 1.42857143;
   color: #333333;
   background-color: #ffffff;
