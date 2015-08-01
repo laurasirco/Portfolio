@@ -110,10 +110,17 @@ h4.heading:after {
 .contact-form {
   margin-bottom: 40px;
 }
-p.social {
+p.social{
   text-align: center;
   margin-top: 20px;
 }
+
+a.social{
+  text-align: center;
+  margin-top: 20px;
+  color: #4fbfa8;
+}
+
 p.social a {
   margin: 0 10px 0 0;
   color: #fff;
@@ -150,14 +157,14 @@ p.social a.email {
 }
 .copyright {
   margin-top: 40px;
-  color: #999999;
+  color: #EEEEEE;
   font-style: italic;
 }
 .copyright p.credit {
   text-align: right;
 }
 .copyright p.credit a {
-  color: #999999;
+  color: #EEEEEE;
 }
 @media (max-width: 991px) {
   .copyright p.credit {
