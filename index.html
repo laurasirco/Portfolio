@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <!-- Google fonts - Montserrat for headings, Cardo for copy-->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Montserrat:400,700|Lora:400,700">
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:200,300,700,300italic' rel='stylesheet' type='text/css'>
     <!-- onepage scroll stylesheet-->
     <link rel="stylesheet" href="css/onepage-scroll.css">
     <!-- theme stylesheet-->
@@ -51,7 +52,7 @@
               <div class="row">
                 <div class="col-md-12"> 
                   <h2 class="heading">About me</h2>
-                  <p class="lead">My name is Laura Sirvent Collado and I'm Spain based Character Animator and Multimedia Engineer.</p>
+                  <p class="lead">My name is Laura Sirvent Collado and I'm a Spain based Character Animator and Multimedia Engineer.</p>
                   <p>Since I was a kid I spent a lot of time using (and spoiling) my dad's computer, trying to figure out how videogames and applications were made, dreaming of "doing" my owns. Those feelings were added to filmmaking when in 1995 -maybe a couple years later- Pixar's Toy Story was released and I fell deeply in love with it, and with the idea of living toys, so I started "shoting" (with a very homemade stop-motion technique) my owns "films".</p>
                   <p>After finishing high school I studied a Bachelor in Multimedia Engineering in Universidad de Alicante (Spain), and I got solved almost of all my questions and thoughts about videogames and applications development. There I got programming, web development, videogames development, sound and video theory, apps development, and other "multimedia" theories and techniques knowledges, and I worked at many group and personal projects, such as videogames, desktop applications, web apps and mobile apps. I almost knew about what I wanted; except for one more thing: filmmaking.</p>
                   <p>Just a week after getting my last grades I started a course in 3D Character Animation, Modelling and Storytelling at Pepe-School-Land in Barcelona. I learnt a lot of animation techniques, the twelve principles, acting, staging and all those stuff. I also got basic knowledges about storytelling, and 3D modelling for production. From this course I got an early demo reel I hope it's a good starting point.</p>
@@ -82,17 +83,16 @@
               <div class="row">
                 <div class="col-md-12">
                   <h2 class="heading">Portfolio</h2>
-                  <p class="text-center">You can make also a portfolio or image gallery.</p>
                   <div class="row">
                     <div class="col-sm-4">
-                      <div class="box"><a href="#" title=""><img src="img/portfolio-1.jpg" alt="" class="img-responsive"></a></div>
+                      <div class="box"><a data-toggle="modal" data-target="#portfolio1" href="#portfolio1" title=""><img src="img/portfolio-1.png" alt="" class="img-responsive"></a></div>
                     </div>
                     <div class="col-sm-4">
-                      <div class="box"><a href="#" title=""><img src="img/portfolio-2.jpg" alt="" class="img-responsive"></a></div>
-                    </div>
+                        <div class="box"><a data-toggle="modal" data-target="#portfolio2" href="#portfolio2" title=""><img src="img/portfolio-2.png" alt="" class="img-responsive"></a></div>                    
+                      </div>
                     <div class="col-sm-4">
-                      <div class="box"><a href="#" title=""><img src="img/portfolio-3.jpg" alt="" class="img-responsive"></a></div>
-                    </div>
+                        <div class="box"><a data-toggle="modal" data-target="#portfolio3" href="#portfolio3" title=""><img src="img/portfolio-3.png" alt="" class="img-responsive"></a></div>                    
+                      </div>
                   </div>
                   <div class="row">
                     <div class="col-sm-4">
@@ -198,6 +198,36 @@
         </section>
       </div>
     </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="portfolio1" tabindex="-1" role="dialog" aria-labelledby="portfolio1Label">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://player.vimeo.com/video/132590156' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></div>
+        
+        <h3>You think you're really pretty?</h3>
+        <p>3D Animation scene made as final project at Pepe-School-Land. I'm responsible of animation, lightning, shading, render and compositing. The audio extract is from film Mean Girls. The software I used is Autodesk Maya 2015 for all the animation and Blender for render, compositing and final look, rendered with the PBR Cycles. The rigs are from Mery Project and the background and props models are from the user Jay-Artist from Blendswap.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="portfolio2" tabindex="-1" role="dialog" aria-labelledby="portfolio2Label">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        
+        <img src="img/portfolio-2.png" class="img-responsive">
+
+        <h3>3D Modelling: Why not?</h3>
+        <p>Diana Mini camera 3D model made as final modelling project at Pepe-School-Land. The model is production-ready. I'm responsible of modelling, lightning, shading and rendering. The model is made in Blender and rendered in PBR Cycles.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
     <!-- Javascript files-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script>
