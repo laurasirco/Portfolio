@@ -1,12 +1,23 @@
 Portfolio
-- Screen Painter
-- Animación Pretty
-- Cámara de fotos
-- Goldenboy
-- The Algorithmic Composer
-- NOMA
+- Screen Painter - OK - Falta contenido
+- Animación Pretty - OK
+- Cámara de fotos -  OK
+- Goldenboy - OK
+- The Algorithmic Composer - OK
+- NOMA - OK
 - La caja fuerte
 - Cyranium
 - YUPIX
 - Todas Mis Recetas
 
+CAROUSEL:
+
+http://www.w3schools.com/bootstrap/bootstrap_carousel.asp
+ en el css
+
+ .carousel-control.left, .carousel-control.right {
+    background-image: none
+}
+
+
+http://embedresponsively.com

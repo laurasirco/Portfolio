@@ -22,10 +22,15 @@ body {
   height: 100%;
   margin: 0 auto;
 }
+
 section {
   position: relative;
   width: 100%;
   overflow: hidden;
+}
+
+#page4{
+  height: 100%;
 }
 
 @media (min-width: 1000px) {
@@ -992,8 +997,16 @@ a.list-group-item.active > .badge,
   background-color: #ffffff;
 }
 
-.modal-body img{
+.img-modal{
 
   margin-bottom: 20px;
   width: 100%;
+}
+
+.img-gif{
+
+  width: 50%;
+  display: block;
+  margin: auto;
+  margin-bottom: 20px;
 }
