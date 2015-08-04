@@ -29,14 +29,12 @@ section {
   overflow: hidden;
 }
 
-#page4{
-  height: 100%;
-}
-
 @media (min-width: 1000px) {
-
   section{
     height: 100%;
+  }
+  #page4{
+    height: 1200px;
   }
 }
 .section-gray {
