@@ -166,13 +166,25 @@ p.social a.email {
 }
 .copyright {
   margin-top: 40px;
-  color: #EEEEEE;
+  color: #999999;
   font-style: italic;
+}
+.copyright a{
+  color: #010101;
+}
+.copyright a:hover{
+  color: #333333;
+}
+.copyright a:focus{
+  color: #333333;
 }
 .copyright p.credit {
   text-align: right;
 }
-.copyright p.credit a {
+.copyright p.credit{
+  color: #EEEEEE;
+}
+.copyright p.credit a{
   color: #EEEEEE;
 }
 @media (max-width: 991px) {
