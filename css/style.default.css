@@ -1018,3 +1018,8 @@ a.list-group-item.active > .badge,
   margin: auto;
   margin-bottom: 20px;
 }
+
+.img-avatar{
+
+  padding-top: 25px;
+}
