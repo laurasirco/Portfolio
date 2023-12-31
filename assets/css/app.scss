@@ -1,0 +1,94 @@
+---
+---
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,700');
+
+$background: #f7f9ff;
+$black: #0c0c0c;
+$red: #ff3500;
+$typography: Roboto;
+
+body {
+    background-color: $background;
+    color: $black;
+
+    font-family: $typography, Arial;
+    font-weight: 300;
+    line-height: 1.3;
+
+    max-width: 780px;
+    margin: 80px auto 80px auto;
+}
+
+h1{
+    font-size: 80px;
+    font-weight: 700;
+}
+
+h2{
+    font-size: 40px;
+    font-weight: 700;
+}
+
+h3{
+    font-size: 24px;
+    font-weight: 700;;
+}
+
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    a {
+        margin-left: 10px;
+    }
+}
+
+section {
+    margin: 40px 0 0 0;
+}
+
+nav a, p a {
+    color: $black;
+    text-decoration: none;
+    border-bottom: 3px solid $red;
+}
+
+p.read-more {
+    font-weight: 700;
+}
+
+div.blog-posts {
+    max-width: 540px;
+
+    a{
+        text-decoration: none;
+        color: $black;
+        display: block;
+        margin: 0 0 40px 0;
+    }
+}
+
+div.circle {
+    position: fixed;
+    bottom: -250px;
+    right: -250px;
+    width: 500px;
+    height: 500px;
+    background-color: $red;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.container {
+    margin: 10px auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  h1 {
+    margin: 30px 0;
+    font-size: 4em;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
