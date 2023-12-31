@@ -1,23 +1,20 @@
 ---
 ---
 
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,700');
+@import url('https://fonts.googleapis.com/css?family=DM+Sans:300,300i,700');
 
 $background: #f7f9ff;
 $black: #0c0c0c;
 $red: #ff3500;
-$typography: Roboto;
+$typography: DM Sans;
 
 body {
     background-color: $background;
     color: $black;
 
-    font-family: $typography, Arial;
+    font-family: $typography, sans-serif;
     font-weight: 300;
     line-height: 1.3;
-
-    max-width: 780px;
-    margin: 80px auto 80px auto;
 }
 
 h1{
@@ -35,24 +32,54 @@ h3{
     font-weight: 700;;
 }
 
+footer{
+    display: flex;
+    justify-content: flex-end;
+    margin: 30px;
+    font-size: 14px;
+    
+    a{
+        margin-left: 10px;
+    }
+}
+
 header{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 30px;
+    font-size: 24px;
+
+    img.logo{
+        max-width: 80px;
+    }
 
     a {
         margin-left: 10px;
     }
 }
 
-section {
-    margin: 40px 0 0 0;
+.center {
+    max-width: 800px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+p{
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 nav a, p a {
     color: $black;
     text-decoration: none;
-    border-bottom: 3px solid $red;
+    text-transform: uppercase;
+    //border-bottom: 3px solid $red;
+    &:hover{
+        text-decoration: line-through;
+    }
 }
 
 p.read-more {
@@ -68,17 +95,6 @@ div.blog-posts {
         display: block;
         margin: 0 0 40px 0;
     }
-}
-
-div.circle {
-    position: fixed;
-    bottom: -250px;
-    right: -250px;
-    width: 500px;
-    height: 500px;
-    background-color: $red;
-    border-radius: 50%;
-    z-index: -1;
 }
 
 .container {
