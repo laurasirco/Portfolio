@@ -11,8 +11,8 @@ layout: default
     {% if remainder != 0 %}
         <div class="row">
     {% endif %}
-        <div class="col-md-6 work">
-            <a href="/">
+        <div class="col-md-6 work_grid">
+            <a href="{{work.url}}">
             <img class="img-fluid" src={{ work.thumb }}>
             <h1>{{work.title}}</h1>
             </a>

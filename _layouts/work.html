@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<div class="work_page">
+    <a class="d-flex" href="/work">Back</a>
+    <img class="d-flex mx-auto" src="{{page.thumb}}">
+    <div class="d-flex justify-content-between">    
+        <h1 class="text-start">{{ page.title }}</h1>
+        <h2 class="text-end">{{ page.year }}</h2>
+    </div>
+    <h2>{{ page.client }}, {{ page.studio }}</h2>
+
+    {{page}}
+</div>
