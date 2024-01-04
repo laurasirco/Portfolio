@@ -79,6 +79,7 @@ img.rounded{
         margin-top: -35px;
         margin-right: 10px;
         text-align: right;
+        font-weight: 300;
     }
 
     img.thumb{
@@ -103,6 +104,7 @@ nav a, p a {
     font-size: 40px;
     color: $black;
     text-decoration: none;
+    font-weight: 300;
     //border-bottom: 3px solid $red;
     &:hover{
         text-decoration: line-through;
