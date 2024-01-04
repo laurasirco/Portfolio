@@ -1,0 +1,26 @@
+---
+layout: default
+---
+
+{% assign works = site.works | sort: "year" | reverse %}
+
+<div class="container-fluid">
+    {% for work in works %}
+
+    {% assign remainder = forloop.index | modulo: 2 %}
+    {% if remainder != 0 %}
+        <div class="row">
+    {% endif %}
+        <div class="col-md-6 work">
+            <a href="/">
+            <img class="img-fluid" src={{ work.thumb }}>
+            <h1>{{work.title}}</h1>
+            </a>
+        </div>
+
+    {% if remainder == 0 %}
+        </div>
+    {% endif %}
+
+    {% endfor %}
+</div>
