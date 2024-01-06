@@ -1,21 +1,21 @@
 ---
 ---
 
-@import url('https://fonts.googleapis.com/css?family=DM+Sans:200,200i,500');
+@import url('https://fonts.googleapis.com/css?family=DM+Sans:300,300i,500');
 
-$background: #f7f9ff;
+
+$background-color: rgb(229, 211, 215);;
 $black: #0c0c0c;
 $red: #ff3500;
 $typography: DM Sans;
+$title_color: rgb(101, 74, 78);
 
 body {
-    background-color: $background;
+    background-color: $background-color;
     color: $black;
     padding: 20px;
     font-family: $typography, sans-serif;
-    font-weight: 200;
-    line-height: 1.3;
-    
+    text-align: left;
 }
 
 h1{
@@ -33,15 +33,61 @@ h3{
     font-weight: 500;
 }
 
+p{
+    font-size: 25px;
+    font-weight: 300;
+}
+
 header{
+    position: fixed;
+    top: 0;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 30px;
     font-size: 24px;
+    padding: 10px;
 
-    a {
-        margin-left: 10px;
+
+    nav{
+        margin-right: 30px;
+
+        a {
+            margin-left: 1vw;
+            font-size: 3vw;
+            color: $black;
+            text-decoration: none;
+            font-weight: 300;
+            //border-bottom: 3px solid $red;
+            &:hover{
+                text-decoration: line-through;
+            }
+        }
+    }
+}
+
+footer{
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+
+    p{
+        float:left;
+        font-size: 20px;
+        font-weight: 300;
+    }
+    nav{
+        float: right;
+
+        a{
+            font-size: 20px;
+            margin-left: 10px;
+            text-decoration: none;
+            color: $black;
+            &:hover{
+                text-decoration: line-through;
+            }
+        }
     }
 }
 
@@ -85,14 +131,27 @@ img.rounded{
 
     display: block;
 
+    p{
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+
     h1{
-        font-size: 50px;
-        font-weight: 300;
+        font-size: 80px;
+        font-weight: 500;
     }
 
     h2{
         font-size: 30px;
         font-weight: 300;
+    }
+
+    img{
+        max-width: 100%;
+    }
+
+    video{
+        max-width: 100%;
     }
 }
 
@@ -102,36 +161,6 @@ img.rounded{
     margin-left: auto;
     margin-right: auto;
     width: 50%;
-}
-
-footer{
-
-    margin: 30px;
-
-    p{
-        float:left;
-        font-size: 20px;
-        font-weight: 300;
-    }
-    nav{
-        float: right;
-
-        a{
-            font-size: 20px;
-            margin-left: 10px;
-        }
-    }
-}
-
-nav a{
-    font-size: 3vw;
-    color: $black;
-    text-decoration: none;
-    font-weight: 300;
-    //border-bottom: 3px solid $red;
-    &:hover{
-        text-decoration: line-through;
-    }
 }
 
 p.read-more {
@@ -150,9 +179,11 @@ div.blog-posts {
 }
 
 section {
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-top: 80px;
+    margin-left: 0px;
+    margin-right: 0px;
     text-align: left;
+    
   }
   h1 {
     margin: 30px 0;
@@ -160,3 +191,25 @@ section {
     line-height: 1;
     letter-spacing: -1px;
 }
+
+
+
+.crew {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    font-size: 20px;
+  }
+  .crew > div {
+    width:49%;
+    margin-bottom:.5rem;
+  }
+  .crew > div:nth-child(odd) {
+    font-weight: 500;
+    text-align:right;
+  }
+  .crew > div:nth-child(even) {
+    text-align:left;
+  }
