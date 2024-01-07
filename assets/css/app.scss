@@ -38,6 +38,10 @@ p{
     font-weight: 300;
 }
 
+a{
+    color: $black;
+}
+
 header{
     position: fixed;
     top: 0;
@@ -145,6 +149,10 @@ img.rounded{
         font-size: 30px;
         font-weight: 300;
         margin-block: auto;
+    }
+
+    h3{
+        font-size: 25px;
     }
 
     img{
