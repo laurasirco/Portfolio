@@ -9,11 +9,12 @@ layout: default
     <video class="center" controls >
         <source src="{{page.video}}#t=0.001" type="video/mp4">
     </video>
-    {% endif %}
-    {% if page.vimeo And page.vimeo != "" And page.vimeo != nil %}
+    {% elsif page.vimeo And page.vimeo != "" And page.vimeo != nil %}
     <div style="padding:56.25% 0 0 0;position:relative;z-index:-1;">
         <iframe src="{{page.vimeo}}&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" ></iframe>
     </div>
+    {% else %}
+    <img class="center" src="{{page.thumb}}">
     {% endif %}
 
 
