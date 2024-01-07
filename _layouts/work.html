@@ -6,10 +6,16 @@ layout: default
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
 
     {% if page.video And page.video != "" And page.video != nil %}
-    <video controls>
-        <source src="{{page.video}}" type="video/mp4">
+    <video class="center" controls >
+        <source src="{{page.video}}#t=0.001" type="video/mp4">
     </video>
     {% endif %}
+    {% if page.vimeo And page.vimeo != "" And page.vimeo != nil %}
+    <div style="padding:56.25% 0 0 0;position:relative;z-index:-1;">
+        <iframe src="{{page.vimeo}}&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" ></iframe>
+    </div>
+    {% endif %}
+
 
     <div class="d-flex justify-content-between">    
         <h1 class="text-start">{{ page.title }}</h1>
