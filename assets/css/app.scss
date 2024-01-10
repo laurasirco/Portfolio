@@ -52,6 +52,7 @@ p{
 a{
     color: $text-color;
     transition: color 0.5s;
+    font-weight: 300;
 }
 
 .header_margin{
@@ -164,8 +165,8 @@ header{
         margin-right: 30px;
 
         a {
-            margin-left: 1vw;
-            font-size: min(calc(20px + 2vw), 60px);
+            margin-left: 0.5vw;
+            font-size: min(calc(10px + 1.8vw), 30px);
             color: $text-color;
             text-decoration: none;
             font-weight: 300;
@@ -187,18 +188,18 @@ footer{
     bottom: 0;
     width: 100%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-left: 10px;
-
+    margin: 0;
     p{
-        font-size: 20px;
         font-weight: 300;
+        padding-left: 10px;
+        font-size: min(calc(5px + 2vw), 30px);
     }
     nav{
-        margin-right: 50px;
+        padding-right: 10px;
+        font-size: min(calc(5px + 2vw), 30px);
+
         a{
-            font-size: 20px;
             margin-left: 10px;
             text-decoration: none;
             color: $text-color;
