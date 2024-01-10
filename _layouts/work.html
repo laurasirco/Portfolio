@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<div class="work_page container">
+<div class="work_page container header_margin">
     
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
 
@@ -33,3 +33,9 @@ layout: default
 
     <h2 class="text-center my-5">Thanks!</h2>
 </div>
+
+<script>
+    let color = "{{page.bg_color}}";
+    console.log(color);
+    $("body").css("background-color", color);
+</script>

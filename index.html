@@ -2,5 +2,16 @@
 layout: default
 title: Laura Sirvent
 ---
-
-{% include works.html %}
+{% assign works = site.works | sort: "year" | reverse %}
+<div class="slideshow">
+<div class="holder">
+    {% for work in works %}
+    <div class="big_title" color="{{work.bg_color}}">
+            <h1>{{work.title}}</h1>
+            <a href="{{work.url}}"><img src="{{work.slide}}"></a>
+    </div>
+    {% endfor %}
+</div>
+<a href="#" class="prev"></a>
+<a href="#" class="next"></a>
+</div>
