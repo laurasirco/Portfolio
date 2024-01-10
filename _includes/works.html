@@ -1,6 +1,6 @@
 {% assign works = site.works | sort: "year" | reverse %}
 
-<div class="container-fluid header_margin">
+<div class="container-fluid header_margin footer_padding">
     {% for work in works %}
 
     {% assign remainder = forloop.index | modulo: 2 %}

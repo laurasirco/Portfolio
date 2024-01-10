@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<div class="work_page container header_margin">
+<div class="work_page container header_margin footer_padding link-svgmarker">
     
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
 
@@ -20,7 +20,7 @@ layout: default
 
     <div class="d-flex justify-content-between">    
         <h1 class="text-start">{{ page.title }}</h1>
-        <h2 class="text-end">{{ page.year }}</h2>
+        <h2 class="text-end marker_text">{{ page.year }}<svg class="link-svgline"><use xlink:href="#svg_marker"></use></svg></h2>
     </div>
 
     {% if page.studio And page.studio != "" And page.studio != nil %}
