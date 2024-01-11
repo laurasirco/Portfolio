@@ -4,16 +4,6 @@
 @import url('https://fonts.googleapis.com/css?family=DM+Sans:300,300i,500');
 @import url('https://fonts.googleapis.com/css?family=Krona+One');
 
-@font-face {
-    font-family: 'UniqueMed';
-    src: url('/assets/fonts/Unique-Medium.woff') format('woff'), /* Modern Browsers */
-         url('/assets/fonts/Unique-Medium.woff2') format('woff2'), /* Modern Browsers */
-         url('/assets/fonts/Unique-Medium.ttf') format('truetype'); /* Safari, Android, iOS */
-             font-style: normal;
-    font-weight: normal;
-    text-rendering: optimizeLegibility;
-}
-
 $background-color: rgb(229, 211, 215);;
 $typography: DM Sans;
 $big_title: UniqueMed;
