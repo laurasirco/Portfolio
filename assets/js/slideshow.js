@@ -8,7 +8,6 @@ function colorElements(color){
     $("body").css("color", color)
     $("a").css("color", color)
     $("#logo").css("background", color)
-    console.log($("a"))
 }
 
 let nextSlide = function(){
