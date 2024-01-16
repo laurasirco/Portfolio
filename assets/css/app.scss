@@ -233,8 +233,6 @@ img.rounded{
     border-radius: 50%;
 }
 
-
-
 .work_grid{
     h1{
         font-size: 50px;
@@ -284,6 +282,18 @@ img.rounded{
 
     video{
         max-width: 100%;
+    }
+}
+
+.tags{
+
+    .tag{
+        font-size: 20px;
+        border:$black;
+        border-style: solid;
+        border-width: 1.5px;
+        border-radius: 100vh;
+        padding: 5px 20px 5px 20px;
     }
 }
 
