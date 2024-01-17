@@ -31,6 +31,9 @@ collections:
   works:
     output: true
     permalink: /:collection/:name
+  dailies:
+    output: true
+    permalink: /:collection/:name
 #    permalink: "/works/:path"
 
 #permalink: /:year/:month/:day/:title
