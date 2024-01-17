@@ -1,0 +1,28 @@
+---
+layout: default
+title: Dailies
+permalink: /dailies
+---
+
+{% assign dailies = site.dailies %}
+
+<div class="container-fluid header_margin footer_padding">
+    {% for daily in site.dailies %}
+
+    {% assign remainder = forloop.index | modulo: 2 %}
+    {% if remainder != 0 %}
+        <div class="row">
+    {% endif %}
+    <div class="col-md-6 work_grid">
+        <img class="img-fluid" src={{ daily.image }}>
+        <h1>{{daily.title}}</h1>
+        <p class="text-end">{{daily.date | date: "%-d %B %Y"}}</p>
+        <p>{{ daily.text }}</p>
+        </a>
+    </div> 
+    {% if remainder == 0 %}
+</div>
+{% endif %}
+
+    {% endfor %}
+</div>
