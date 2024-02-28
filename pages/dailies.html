@@ -14,7 +14,14 @@ permalink: /dailies
         <div class="row">
     {% endif %}
     <div class="col-md-6 work_grid">
-        <img class="img-fluid" src={{ daily.image }}>
+        {% if daily.video %}
+        <video class="img-fluid z-0" autoplay loop>
+            <source src="{{daily.video}}#t=0.001" type="video/mp4">
+        </video>
+        {% endif %}
+        {% if daily.image %}
+            <img class="img-fluid" src={{ daily.image }}>
+        {% endif %}
         <h1>{{daily.title}}</h1>
         <p class="text-end">{{daily.published | date: "%-d %B %Y"}}</p>
         <p>{{ daily.text }}</p>
