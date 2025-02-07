@@ -1,0 +1,86 @@
+---
+layout: work
+title: Dancing Boss
+year: 2024
+client: Personal
+studio: 
+thumb: "/assets/projects/dance_boss/preview.png"
+slide: "/assets/projects/dance_boss/preview.png"
+main_color: white
+bg_color: "#FFEDD4"
+---
+
+<p>Dancing Boss is a web experience where a house music-based sequencer lets you generate small music loops with drums, bass, melody, and chords,
+  along with a 3D scene that reacts to the music in real time.</p>
+
+<p>You can give it a go here: <a href="https://boss.laurasirvent.com">Dancing Boss</a></p>
+
+<p>Dancing Boss is the first interactive project I have created. I have always been interested in the fusion of technology and creativity. I love exploring music, 3D, and design,
+  and I wanted to take a first step into this idea with a more open-ended project where users could interact.
+</p>
+
+<div class="row g-1">
+  <div class="col">
+    <video  style="max-width: 50%;" class="my-1 center" controls>
+      <source src="/assets/projects/dance_boss/video/bts.mp4#t=0.001" type="video/mp4">
+    </video>
+  </div>
+  <div class="col">
+      
+    <video  style="max-width: 50%;" class="my-1 center" controls>
+  <source src="/assets/projects/dance_boss/video/Corto.mp4#t=0.001" type="video/mp4">
+</video>
+  </div>
+</div>
+
+<p>The technology behind this project is simply HTML/CSS/JavaScript, using Tone.js and Three.js libraries. I’m not an expert programmer, and maybe I got a little carried away,
+  so the code isn’t the most optimized I’ve ever written. I like to think that I was creatively free, stepping away from my rigid way of thinking—just making the experience work.</p>
+
+<p>For this project, I had to combine several disciplines: 3D design, character design, UI/UX design, music theory (algorithmic composition), and programming.</p>
+
+<img class="my-1 center" src="/assets/projects/dance_boss/boss.png" style="max-width: 50%;">
+
+<p>Coding-wise, ChatGPT was very helpful, as I would present my ideas and what I wanted, especially for the algorithmic composition part—generating chord progressions, bass and melody lines, and putting together harmonies that always sounded fairly good. AI helped me by acting like a little minion, coding snippets based on my concepts. It was a nice experience to maintain a conversation with the AI and have it help me bring my ideas to life.</p>
+
+  <div class="row g-1">
+    <div class="col">
+        <img src="/assets/projects/dance_boss/desk.png">
+    </div>
+    <div class="col">
+        <img src="/assets/projects/dance_boss/elements.png">
+    </div>
+</div>
+
+<p>Speaking about 3D, my main field, I wanted to focus on a low-poly, retro design. I really enjoyed using visual references from Severance (Apple TV+) as inspiration for the artistic direction.
+  For the creative direction, I explored my usual love for absurd contrasts—a serious, mature boss, faithful to his work principles, breaking expectations by dancing in an unorthodox way
+  to house music rhythms in the middle of his office.</p>
+
+
+<img class="my-1 center" src="/assets/projects/dance_boss/wire.png">
+
+<p>Making the character dance in sync with each part of the music was a small challenge. The process involved creating a simple rig in Blender (I used a Mixamo template
+  to make it more "generic"), then designing a set of basic animations (stretching a leg, turning the torso, tilting the head…).
+  Then, in Three.js, I triggered the character’s animations based on what was playing at the moment. It was a fun and satisfying process—
+  each time the dance movements were generated, I saw endless combinations and how amusing they looked on such a serious character.</p>
+
+
+  <img class="my-1 center" src="/assets/projects/dance_boss/rig.png">
+
+  <video  style="max-width: 50%;" class="my-2 center" controls>
+    <source src="/assets/projects/dance_boss/video/movements.mp4" type="video/mp4">
+  </video>
+
+<p>I had to create a simple user interaction system. Since I’m not an expert in this area either, I focused on experimenting with beautiful UI designs
+  that were easy to understand, designing both the interface layout and the visual style of the elements.</p>
+
+<img class="my-1" src="/assets/projects/dance_boss/ui-exploration.png">
+
+<p>For music generation, I coded a simple sequencer that records the notes tapped by the user at the exact beat they were played. It’s not perfectly precise, as it adds a bit of randomness while still being quantized to 1/8.</p>
+
+<p>The music is divided into four different layers: drums, featuring TR-909-like samples; bass and melody notes, based on a chord progression randomly picked from a list (related to common house music progressions); and a chord layer. The drums, bass, and melody layers influence the character and element animations while being recorded. However, the chord layer is designed more as a live performance element—it doesn't record the played steps and instead affects the scene's light colors.</p>
+<img class="my-1 center" src="/assets/projects/dance_boss/layers-ui.png" style="max-width: 50%;">
+
+<p>I really hope you enjoy this dumb and funny project, as it will encourage me to create more of this silly experiments!</p>
+
+<img class="my-1 center" src="/assets/projects/dance_boss/title.png" style="max-width: 200px;">
+
