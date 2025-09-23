@@ -2,25 +2,35 @@
 layout: default
 ---
 <div class="work_page container header_margin footer_padding link-svgmarker">
-    
+
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
 
     {% if page.video And page.video != "" And page.video != nil %}
-    <video class="center" controls >
+    <video class="center" controls>
         <source src="{{page.video}}#t=0.001" type="video/mp4">
     </video>
     {% elsif page.vimeo And page.vimeo != "" And page.vimeo != nil %}
-    <div style="padding:56.25% 0 0 0;position:relative;z-index:-1;">
+    <!-- <div style="padding:56.25% 0 0 0;position:relative;z-index:-1;">
         <iframe src="{{page.vimeo}}&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div> -->
+    <div style="padding:56.25% 0 0 0;position:relative;">
+        <iframe src="https://player.vimeo.com/video/{{ page.vimeo }}?badge=0&autopause=0&title=0&byline=0&portrait=0"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="{{ page.title }}">
+        </iframe>
     </div>
+    <script src="https://player.vimeo.com/api/player.js"></script>
     {% else %}
     <img class="center" src="{{page.thumb}}">
     {% endif %}
 
 
-    <div class="d-flex justify-content-between">    
+    <div class="d-flex justify-content-between">
         <h1 class="text-start">{{ page.title }}</h1>
-        <h2 class="text-end marker_text">{{ page.year }}<svg class="link-svgline"><use xlink:href="#svg_marker"></use></svg></h2>
+        <h2 class="text-end marker_text">{{ page.year }}<svg class="link-svgline">
+                <use xlink:href="#svg_marker"></use>
+            </svg></h2>
     </div>
 
     {% if page.studio And page.studio != "" And page.studio != nil %}
