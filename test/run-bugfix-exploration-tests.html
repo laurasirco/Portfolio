@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Condition Exploration Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+    }
+    .info {
+      background: #264f78;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .warning {
+      background: #5a3e1b;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      border-left: 4px solid #ce9178;
+    }
+    #console-output {
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Bug Condition Exploration Tests</h1>
+  
+  <div class="warning">
+    <strong>⚠️ IMPORTANT:</strong> These tests are EXPECTED TO FAIL on unfixed code.<br>
+    Test failures confirm that the bugs exist and need to be fixed.<br>
+    After implementing the fixes, these same tests should pass.
+  </div>
+  
+  <div class="info">
+    <strong>Testing:</strong><br>
+    • Bug 1: iPhone popover centering with dynamic address bar<br>
+    • Bug 2: Gyroscope permission over HTTP on iOS<br>
+    <br>
+    <strong>Requirements:</strong> 2.1, 2.2, 2.3, 2.4, 2.8
+  </div>
+  
+  <h2>Test Output:</h2>
+  <div id="console-output"></div>
+  
+  <!-- Load the playground JavaScript (contains functions to test) -->
+  <script src="../assets/js/playground.js"></script>
+  
+  <!-- Load the test file -->
+  <script src="./playground-iphone-bugfix-exploration.test.js"></script>
+  
+  <script>
+    // Capture console output and display it
+    const outputDiv = document.getElementById('console-output');
+    
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓')) {
+        span.className = 'pass';
+      }
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+    
+    // Display environment info
+    console.log('Environment Information:');
+    console.log('User Agent: ' + navigator.userAgent);
+    console.log('Protocol: ' + window.location.protocol);
+    console.log('Viewport Height: ' + window.innerHeight + 'px');
+    console.log('');
+  </script>
+</body>
+</html>

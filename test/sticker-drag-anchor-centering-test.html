@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticker Drag System - Anchor Centering Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+    }
+    .info {
+      background: #264f78;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    #console-output {
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+    .test-section {
+      margin: 20px 0;
+      padding: 10px;
+      border-left: 3px solid #4ec9b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Sticker Drag System - Anchor Centering Tests</h1>
+  
+  <div class="info">
+    <strong>Testing:</strong><br>
+    • Property 1: Sticker Anchor Centered at Cursor<br>
+    • Property 2: Sticker Follows Cursor Smoothly<br>
+    <br>
+    <strong>Requirements:</strong> 1.1, 1.2, 1.3
+  </div>
+  
+  <h2>Test Output:</h2>
+  <div id="console-output"></div>
+  
+  <!-- Load GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  
+  <!-- Load the drag system -->
+  <script type="module">
+    import { StickerDragSystem } from '../assets/js/systems/drag-system.js';
+    
+    // Capture console output
+    const outputDiv = document.getElementById('console-output');
+    
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓')) {
+        span.className = 'pass';
+      }
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+    
+    // Test suite
+    console.log('=== Sticker Drag System Tests ===\n');
+    
+    let testsPassed = 0;
+    let testsFailed = 0;
+    
+    function assert(condition, message) {
+      if (condition) {
+        console.log('✓ ' + message);
+        testsPassed++;
+      } else {
+        console.error('✗ ' + message);
+        testsFailed++;
+      }
+    }
+    
+    // Test 1: Initialize drag system
+    console.log('Test 1: Initialize drag system');
+    const sticker1 = document.createElement('div');
+    sticker1.style.position = 'absolute';
+    sticker1.style.width = '100px';
+    sticker1.style.height = '100px';
+    sticker1.style.left = '200px';
+    sticker1.style.top = '200px';
+    document.body.appendChild(sticker1);
+    
+    const dragSystem1 = new StickerDragSystem();
+    dragSystem1.init(sticker1);
+    
+    assert(dragSystem1.element === sticker1, 'Element is set correctly');
+    assert(dragSystem1.isDragging === false, 'Initial isDragging is false');
+    console.log('');
+    
+    // Test 2: Anchor centering on drag start
+    console.log('Test 2: Anchor centering on drag start');
+    const sticker2 = document.createElement('div');
+    sticker2.style.position = 'absolute';
+    sticker2.style.width = '100px';
+    sticker2.style.height = '100px';
+    sticker2.style.left = '200px';
+    sticker2.style.top = '200px';
+    document.body.appendChild(sticker2);
+    
+    const dragSystem2 = new StickerDragSystem();
+    dragSystem2.init(sticker2);
+    
+    // Simulate mouse down at (300, 300)
+    const mouseDownEvent = new MouseEvent('mousedown', {
+      clientX: 300,
+      clientY: 300,
+      bubbles: true
+    });
+    sticker2.dispatchEvent(mouseDownEvent);
+    
+    // Element center is at (250, 250), cursor at (300, 300)
+    // So offset should be (50, 50)
+    assert(dragSystem2.offsetX === 50, 'Offset X is 50 (cursor - center)');
+    assert(dragSystem2.offsetY === 50, 'Offset Y is 50 (cursor - center)');
+    assert(dragSystem2.isDragging === true, 'isDragging is true after mousedown');
+    console.log('');
+    
+    // Test 3: No jump to top-right corner
+    console.log('Test 3: No jump to top-right corner');
+    const sticker3 = document.createElement('div');
+    sticker3.style.position = 'absolute';
+    sticker3.style.width = '100px';
+    sticker3.style.height = '100px';
+    sticker3.style.left = '200px';
+    sticker3.style.top = '200px';
+    document.body.appendChild(sticker3);
+    
+    const dragSystem3 = new StickerDragSystem();
+    dragSystem3.init(sticker3);
+    
+    const initialLeft = parseFloat(sticker3.style.left);
+    const initialTop = parseFloat(sticker3.style.top);
+    
+    const mouseDownEvent3 = new MouseEvent('mousedown', {
+      clientX: 300,
+      clientY: 300,
+      bubbles: true
+    });
+    sticker3.dispatchEvent(mouseDownEvent3);
+    
+    const afterLeft = parseFloat(sticker3.style.left);
+    const afterTop = parseFloat(sticker3.style.top);
+    
+    assert(afterLeft === initialLeft, 'Left position unchanged after mousedown');
+    assert(afterTop === initialTop, 'Top position unchanged after mousedown');
+    console.log('');
+    
+    // Test 4: Smooth cursor following
+    console.log('Test 4: Smooth cursor following');
+    const sticker4 = document.createElement('div');
+    sticker4.style.position = 'absolute';
+    sticker4.style.width = '100px';
+    sticker4.style.height = '100px';
+    sticker4.style.left = '200px';
+    sticker4.style.top = '200px';
+    document.body.appendChild(sticker4);
+    
+    const dragSystem4 = new StickerDragSystem();
+    dragSystem4.init(sticker4);
+    
+    // Start drag at (300, 300)
+    const mouseDownEvent4 = new MouseEvent('mousedown', {
+      clientX: 300,
+      clientY: 300,
+      bubbles: true
+    });
+    sticker4.dispatchEvent(mouseDownEvent4);
+    
+    // Move to (350, 350)
+    const mouseMoveEvent = new MouseEvent('mousemove', {
+      clientX: 350,
+      clientY: 350,
+      bubbles: true
+    });
+    document.dispatchEvent(mouseMoveEvent);
+    
+    // Element should be at (300, 300) to keep center at cursor (350, 350) with offset (50, 50)
+    const movedLeft = parseFloat(sticker4.style.left);
+    const movedTop = parseFloat(sticker4.style.top);
+    
+    assert(movedLeft === 300, 'Element moved to left=300 during drag');
+    assert(movedTop === 300, 'Element moved to top=300 during drag');
+    console.log('');
+    
+    // Test 5: Reduced inertia calculation
+    console.log('Test 5: Reduced inertia calculation');
+    const sticker5 = document.createElement('div');
+    sticker5.style.position = 'absolute';
+    sticker5.style.width = '100px';
+    sticker5.style.height = '100px';
+    document.body.appendChild(sticker5);
+    
+    const dragSystem5 = new StickerDragSystem();
+    dragSystem5.init(sticker5, { inertiaMultiplier: 0.5 });
+    
+    const velocity = { x: 100, y: 100 };
+    const inertia = dragSystem5.calculateReducedInertia(velocity);
+    
+    assert(inertia.x === 50, 'Inertia X is 50% of velocity (100 * 0.5)');
+    assert(inertia.y === 50, 'Inertia Y is 50% of velocity (100 * 0.5)');
+    console.log('');
+    
+    // Test 6: Custom inertia multiplier
+    console.log('Test 6: Custom inertia multiplier');
+    const sticker6 = document.createElement('div');
+    sticker6.style.position = 'absolute';
+    sticker6.style.width = '100px';
+    sticker6.style.height = '100px';
+    document.body.appendChild(sticker6);
+    
+    const dragSystem6 = new StickerDragSystem();
+    dragSystem6.init(sticker6, { inertiaMultiplier: 0.25 });
+    
+    const velocity6 = { x: 100, y: 100 };
+    const inertia6 = dragSystem6.calculateReducedInertia(velocity6);
+    
+    assert(inertia6.x === 25, 'Inertia X is 25% of velocity (100 * 0.25)');
+    assert(inertia6.y === 25, 'Inertia Y is 25% of velocity (100 * 0.25)');
+    console.log('');
+    
+    // Test 7: Callbacks
+    console.log('Test 7: Callbacks');
+    const sticker7 = document.createElement('div');
+    sticker7.style.position = 'absolute';
+    sticker7.style.width = '100px';
+    sticker7.style.height = '100px';
+    document.body.appendChild(sticker7);
+    
+    let onDragStartCalled = false;
+    let onDragEndCalled = false;
+    
+    const dragSystem7 = new StickerDragSystem();
+    dragSystem7.init(sticker7, {
+      onDragStart: () => { onDragStartCalled = true; },
+      onDragEnd: () => { onDragEndCalled = true; }
+    });
+    
+    const mouseDownEvent7 = new MouseEvent('mousedown', {
+      clientX: 300,
+      clientY: 300,
+      bubbles: true
+    });
+    sticker7.dispatchEvent(mouseDownEvent7);
+    
+    assert(onDragStartCalled === true, 'onDragStart callback was called');
+    
+    const mouseUpEvent = new MouseEvent('mouseup', {
+      clientX: 350,
+      clientY: 350,
+      bubbles: true
+    });
+    document.dispatchEvent(mouseUpEvent);
+    
+    assert(onDragEndCalled === true, 'onDragEnd callback was called');
+    console.log('');
+    
+    // Summary
+    console.log('=== Test Summary ===');
+    console.log('Passed: ' + testsPassed);
+    console.log('Failed: ' + testsFailed);
+    console.log('Total: ' + (testsPassed + testsFailed));
+    
+    if (testsFailed === 0) {
+      console.log('\n✓ All tests passed!');
+    } else {
+      console.log('\n✗ Some tests failed');
+    }
+    
+    // Clean up
+    document.querySelectorAll('div[style*="position: absolute"]').forEach(el => {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    });
+  </script>
+</body>
+</html>

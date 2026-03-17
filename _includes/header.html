@@ -13,10 +13,9 @@
         <!-- <img class="logo" id="logo" src="/assets/img/logo_white.png" alt="Laura Sirvent"> -->
     </a>
     <nav>
-        <a href="/">Home</a>
-        <a href="/work">Work</a>
-        <!-- <a href="/dailies">Dailies</a> -->
-        <a href="/about">About</a>
-        <!-- <a href="/playground">Playground</a> -->
+        <a href="/" {% if page.url == "/" %}class="active"{% endif %}>Home</a>
+        <a href="/work" {% if page.url == "/work/" or page.url contains "/work/" %}class="active"{% endif %}>Work</a>
+        <a href="/playground" {% if page.url == "/playground/" or page.url contains "/playground/" %}class="active"{% endif %}>Sketchbook</a>
+        <a href="/about" {% if page.url == "/about/" or page.url contains "/about/" %}class="active"{% endif %}>About</a>
     </nav>
 </header>

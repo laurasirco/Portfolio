@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4.4: Dual Popover Animation Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      max-height: 800px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+    .info { color: #9cdcfe; }
+    .section { color: #ce9178; margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Task 4.4: Dual Popover Animation Test</h1>
+  <p>Testing simultaneous popover animations during navigation</p>
+  <div id="output"></div>
+
+  <!-- Load GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+
+  <!-- Create minimal DOM structure for testing -->
+  <script>
+    // Create playground grid
+    const grid = document.createElement('div');
+    grid.className = 'playground-grid';
+    document.body.appendChild(grid);
+
+    // Create test cards
+    for (let i = 0; i < 5; i++) {
+      const card = document.createElement('div');
+      card.className = 'playground-card';
+      card.setAttribute('data-title', `Entry ${i + 1}`);
+      card.setAttribute('data-caption', `Caption for entry ${i + 1}`);
+      card.setAttribute('data-media-type', 'text');
+      card.style.setProperty('--text-color', '#000000');
+      card.style.setProperty('--font-family', 'sans-serif');
+      card.style.setProperty('--bg-color', 'transparent');
+
+      const thumb = document.createElement('div');
+      thumb.className = 'playground-thumb';
+      thumb.textContent = `Entry ${i + 1}`;
+      card.appendChild(thumb);
+
+      grid.appendChild(card);
+    }
+  </script>
+
+  <!-- Load playground.js -->
+  <script src="../assets/js/playground.js"></script>
+
+  <!-- Test Suite -->
+  <script>
+    const output = document.getElementById('output');
+    let testsPassed = 0;
+    let testsFailed = 0;
+
+    function log(message, type = 'info') {
+      const span = document.createElement('span');
+      span.className = type;
+      span.textContent = message + '\n';
+      output.appendChild(span);
+      console.log(message);
+    }
+
+    function test(name, fn) {
+      try {
+        fn();
+        log(`✓ ${name}`, 'pass');
+        testsPassed++;
+      } catch (err) {
+        log(`✗ ${name}: ${err.message}`, 'fail');
+        testsFailed++;
+      }
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    // Wait for GSAP to be available
+    setTimeout(() => {
+      log('=== Task 4.4: Dual Popover Animation Tests ===', 'section');
+      log('');
+
+      // Test 1: Dual popover structure
+      log('Test Suite 1: Dual Popover Structure', 'section');
+      test('Should create two popover instances', () => {
+        const popovers = document.querySelectorAll('.playground-popover');
+        assert(popovers.length === 2, `Expected 2 popovers, got ${popovers.length}`);
+      });
+
+      test('Should have current popover with id "popover-current"', () => {
+        const current = document.getElementById('popover-current');
+        assert(current !== null, 'Current popover not found');
+        assert(current.classList.contains('playground-popover'), 'Current popover missing class');
+      });
+
+      test('Should have next popover with id "popover-next"', () => {
+        const next = document.getElementById('popover-next');
+        assert(next !== null, 'Next popover not found');
+        assert(next.classList.contains('playground-popover'), 'Next popover missing class');
+      });
+
+      test('Next popover should be hidden initially', () => {
+        const next = document.getElementById('popover-next');
+        assert(next.style.display === 'none', `Expected display: none, got ${next.style.display}`);
+      });
+
+      // Test 2: Popover content areas
+      log('', 'info');
+      log('Test Suite 2: Popover Content Areas', 'section');
+      test('Both popovers should have content areas', () => {
+        const popovers = document.querySelectorAll('.playground-popover');
+        popovers.forEach((popover, idx) => {
+          const content = popover.querySelector('.popover-content');
+          assert(content !== null, `Popover ${idx} missing content area`);
+        });
+      });
+
+      test('Both popovers should have navigation buttons', () => {
+        const popovers = document.querySelectorAll('.playground-popover');
+        popovers.forEach((popover, idx) => {
+          const prevBtn = popover.querySelector('.popover-nav-button.prev');
+          const nextBtn = popover.querySelector('.popover-nav-button.next');
+          assert(prevBtn !== null, `Popover ${idx} missing prev button`);
+          assert(nextBtn !== null, `Popover ${idx} missing next button`);
+        });
+      });
+
+      // Test 3: Navigation animation setup
+      log('', 'info');
+      log('Test Suite 3: Navigation Animation Setup', 'section');
+      test('Should have overlay element', () => {
+        const overlay = document.querySelector('.playground-overlay');
+        assert(overlay !== null, 'Overlay not found');
+      });
+
+      test('Should have all cards in allCards array', () => {
+        assert(allCards.length === 5, `Expected 5 cards, got ${allCards.length}`);
+      });
+
+      // Test 4: Open popover
+      log('', 'info');
+      log('Test Suite 4: Open Popover', 'section');
+      test('Should open popover at index 0', () => {
+        openPopover(0);
+        assert(currentPopoverIndex === 0, `Expected index 0, got ${currentPopoverIndex}`);
+        assert(popoverElement.style.display === 'flex', 'Popover should be visible');
+      });
+
+      test('Current popover should have content after opening', () => {
+        const content = popoverElement.querySelector('.popover-content');
+        assert(content.innerHTML !== '', 'Content area should not be empty');
+      });
+
+      // Test 5: Navigation with dual popovers
+      log('', 'info');
+      log('Test Suite 5: Dual Popover Navigation', 'section');
+      
+      test('Should navigate to next card', (done) => {
+        // Store initial state
+        const initialIndex = currentPopoverIndex;
+        
+        // Navigate to next
+        nextCard();
+        
+        // Check that index changed
+        assert(currentPopoverIndex === initialIndex + 1, 
+          `Expected index ${initialIndex + 1}, got ${currentPopoverIndex}`);
+      });
+
+      test('Should have swapped popover references after navigation', () => {
+        // After navigation, the old nextPopoverElement should now be popoverElement
+        const current = document.getElementById('popover-current');
+        const next = document.getElementById('popover-next');
+        
+        // One should be visible, one should be hidden
+        const currentVisible = current.style.display !== 'none';
+        const nextVisible = next.style.display !== 'none';
+        
+        assert(currentVisible || nextVisible, 'At least one popover should be visible');
+      });
+
+      test('Should navigate to previous card', () => {
+        const initialIndex = currentPopoverIndex;
+        prevCard();
+        assert(currentPopoverIndex === initialIndex - 1, 
+          `Expected index ${initialIndex - 1}, got ${currentPopoverIndex}`);
+      });
+
+      // Test 6: Animation parameters
+      log('', 'info');
+      log('Test Suite 6: Animation Parameters', 'section');
+      test('Navigation buttons should be disabled at boundaries', () => {
+        // Navigate to first card
+        navigateToCard(0);
+        
+        const prevBtns = document.querySelectorAll('.popover-nav-button.prev');
+        const nextBtns = document.querySelectorAll('.popover-nav-button.next');
+        
+        // At first card, prev should be disabled
+        let prevDisabled = false;
+        prevBtns.forEach(btn => {
+          if (btn.disabled) prevDisabled = true;
+        });
+        assert(prevDisabled, 'Prev button should be disabled at first card');
+      });
+
+      test('Navigation buttons should be enabled in middle', () => {
+        navigateToCard(2);
+        
+        const prevBtns = document.querySelectorAll('.popover-nav-button.prev');
+        const nextBtns = document.querySelectorAll('.popover-nav-button.next');
+        
+        let prevEnabled = false;
+        let nextEnabled = false;
+        
+        prevBtns.forEach(btn => {
+          if (!btn.disabled) prevEnabled = true;
+        });
+        nextBtns.forEach(btn => {
+          if (!btn.disabled) nextEnabled = true;
+        });
+        
+        assert(prevEnabled, 'Prev button should be enabled in middle');
+        assert(nextEnabled, 'Next button should be enabled in middle');
+      });
+
+      // Test 7: Close popover
+      log('', 'info');
+      log('Test Suite 7: Close Popover', 'section');
+      test('Should close popover', () => {
+        closePopover();
+        assert(currentPopoverIndex === -1, 'Current index should be -1 after close');
+      });
+
+      // Summary
+      log('', 'info');
+      log('=== Test Summary ===', 'section');
+      log(`Passed: ${testsPassed}`, 'pass');
+      log(`Failed: ${testsFailed}`, testsFailed > 0 ? 'fail' : 'pass');
+      log(`Total: ${testsPassed + testsFailed}`, 'info');
+    }, 500);
+  </script>
+</body>
+</html>

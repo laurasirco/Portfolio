@@ -1,31 +1,35 @@
 ---
-layout: default
-title: Playground
-permalink: /playground
+layout: playground
+title: Sketchbook
+permalink: /playground/
 ---
-<section class="matter" data-html-matter>
 
-    <div class="circle"></div>
+{% include discipline-filter.html %}
 
-    <div data-object="obj0"  class="syllable">
-        <h1>ama</h1>
-    </div>
-    <div data-object="obj1" class="syllable">
-        <h1>teur</h1>
-    </div>
-    <div data-object="obj2" class="syllable">
-        <h1>pho</h1>
-    </div>
-    <div data-object="obj3" class="syllable">
-        <h1>to</h1>
-    </div>
-    <div data-object="obj4" class="syllable">
-        <h1>gra</h1>
-    </div>
-    <div data-object="obj5" class="syllable">
-        <h1>pher</h1>
-    </div>
-</section>
+{% assign base_size = 100 %}
+{% assign gap_size = 20 %}
 
-<script src="/assets/js/matter.min.js"></script>
-<script src="/assets/js/letters.js"></script>
+<div class="playground-grid header_margin footer_padding">
+    {% for item in site.playground %}
+    {% assign size = item.size | default: "1x1" %}
+    {% assign size_parts = size | split: "x" %}
+    {% assign grid_col = size_parts[0] | plus: 0 %}
+    {% assign grid_row = size_parts[1] | plus: 0 %}
+    
+    <div class="playground-card" style="--index: {{forloop.index}}; --random-rotate: {{forloop.index | times: 7.5 | modulo: 30 | minus: 15}}deg; --random-offset-x: {{forloop.index | times: 73 | modulo: 60 | minus: 30}}px; --random-offset-y: {{forloop.index | times: 89 | modulo: 60 | minus: 30}}px; --grid-col: {{grid_col}}; --grid-row: {{grid_row}}; --text-color: {{item.text_color | default: '#010002'}}; --font-family: {{item.font_family | default: 'var(--font-sans-serif)' | escape }}; --bg-color: {{item.bg_color | default: 'transparent'}};" data-discipline="{{item.discipline}}" data-size="{{size}}" data-grid-col="{{grid_col}}" data-grid-row="{{grid_row}}" data-title="{{item.title}}" data-caption="{{item.caption}}" data-media-type="{{item.media_type}}" data-date="{{item.date | date: '%B %d, %Y'}}" data-text-color="{{item.text_color | default: '#010002'}}" data-font-family="{{item.font_family | default: 'var(--font-sans-serif)' | escape }}" data-bg-color="{{item.bg_color | default: 'transparent'}}">
+        {% if item.media_type == "video" %}
+        <video class="playground-thumb" autoplay loop muted playsinline webkit-playsinline>
+            <source src="{{item.media}}#t=0.001" type="video/mp4">
+        </video>
+        {% elsif item.media_type == "image" or item.media_type == "gif" %}
+        <img class="playground-thumb" src="{{item.media}}" alt="{{item.title}}">
+        {% elsif item.media_type == "three_d" %}
+        <div class="playground-3d-thumb" data-3d-url="{{item.media}}"></div>
+        {% elsif item.media_type == "text" %}
+        <div class="playground-text-box">
+            {{item.content}}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>

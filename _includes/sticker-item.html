@@ -1,0 +1,75 @@
+{% assign sticker_type = sticker.type | default: "image" %}
+{% assign sticker_scale = sticker.scale | default: 1 %}
+{% assign sticker_draggable = sticker.draggable | default: true %}
+
+{% assign sticker_top = sticker.position.top | default: sticker.top %}
+{% assign sticker_bottom = sticker.position.bottom | default: sticker.bottom %}
+{% assign sticker_left = sticker.position.left | default: sticker.left %}
+{% assign sticker_right = sticker.position.right | default: sticker.right %}
+
+{% assign sticker_rotation = sticker.rotation | default: "0deg" %}
+
+{% assign sticker_shape = sticker.shape | default: "rectangular" %}
+{% assign sticker_text_color = sticker.textColor | default: sticker.text_color | default: "var(--text-color)" %}
+{% assign sticker_bg_color = sticker.bgColor | default: sticker.bg_color | default: "transparent" %}
+{% assign sticker_font_size = sticker.fontSize | default: "clamp(14px, 1.8vw, 22px)" %}
+{% assign sticker_font_weight = sticker.fontWeight | default: "var(--font-weight-sans-strong)" %}
+{% assign sticker_font_family = sticker.fontFamily | default: "var(--font-sans-serif)" %}
+{% assign sticker_svg_mask = sticker.svgMask | default: sticker.svg_mask %}
+
+{% case sticker_type %}
+  {% when "image" %}
+    <div
+      class="sticker-wrapper parallax-element"
+      data-sticker-type="image"
+      data-scale="{{ sticker_scale }}"
+      data-draggable="{{ sticker_draggable }}"
+      style="
+        {% if sticker_top %}top: {{ sticker_top }};{% endif %}
+        {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}
+        {% if sticker_left %}left: {{ sticker_left }};{% endif %}
+        {% if sticker_right %}right: {{ sticker_right }};{% endif %}
+        transform: rotate({{ sticker_rotation }}) scale({{ sticker_scale }});
+      "
+    >
+      <img class="sticker" src="{{ sticker.path }}" alt="{{ sticker.alt | default: 'Sticker' }}">
+    </div>
+  {% when "text" %}
+    <div
+      class="sticker-wrapper sticker-text-wrapper sticker-shape-{{ sticker_shape }} parallax-element"
+      data-sticker-type="text"
+      data-scale="{{ sticker_scale }}"
+      data-draggable="{{ sticker_draggable }}"
+      style="
+        {% if sticker_top %}top: {{ sticker_top }};{% endif %}
+        {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}
+        {% if sticker_left %}left: {{ sticker_left }};{% endif %}
+        {% if sticker_right %}right: {{ sticker_right }};{% endif %}
+        transform: rotate({{ sticker_rotation }}) scale({{ sticker_scale }});
+        color: {{ sticker_text_color }};
+        background-color: {{ sticker_bg_color }};
+        font-size: {{ sticker_font_size }};
+        font-weight: {{ sticker_font_weight }};
+        font-family: {{ sticker_font_family }};
+        {% if sticker_shape == "svg" and sticker_svg_mask %}-webkit-mask-image: url('{{ sticker_svg_mask }}'); mask-image: url('{{ sticker_svg_mask }}'); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;{% endif %}
+      "
+    >
+      <div class="sticker-text-content">{{ sticker.content }}</div>
+    </div>
+  {% when "3d" %}
+    <div
+      class="sticker-wrapper sticker-3d-wrapper parallax-element"
+      data-sticker-type="3d"
+      data-model-path="{{ sticker.modelPath }}"
+      data-model-format="{{ sticker.format }}"
+      data-scale="{{ sticker_scale }}"
+      data-draggable="{{ sticker_draggable }}"
+      style="
+        {% if sticker_top %}top: {{ sticker_top }};{% endif %}
+        {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}
+        {% if sticker_left %}left: {{ sticker_left }};{% endif %}
+        {% if sticker_right %}right: {{ sticker_right }};{% endif %}
+        transform: rotate({{ sticker_rotation }}) scale({{ sticker_scale }});
+      "
+    ></div>
+{% endcase %}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preservation Tests Runner</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+  </style>
+</head>
+<body>
+  <h1>Preservation Property Tests</h1>
+  <p>Running tests on UNFIXED code - these should PASS to confirm baseline behavior</p>
+  <div id="output"></div>
+
+  <!-- Load GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+
+  <!-- Create minimal DOM structure for testing -->
+  <script>
+    // Create playground grid
+    const grid = document.createElement('div');
+    grid.className = 'playground-grid';
+    document.body.appendChild(grid);
+
+    // Capture console output
+    const outputDiv = document.getElementById('output');
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓')) {
+        span.className = 'pass';
+      } else if (message.includes('✗')) {
+        span.className = 'fail';
+      }
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+  </script>
+
+  <!-- Load playground code -->
+  <script src="../assets/js/playground.js"></script>
+
+  <!-- Load preservation tests -->
+  <script src="playground-iphone-bugfix-preservation.test.js"></script>
+</body>
+</html>

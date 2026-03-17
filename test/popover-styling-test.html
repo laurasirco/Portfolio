@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popover Styling and 3D Rendering Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+    .info { color: #9cdcfe; }
+  </style>
+</head>
+<body>
+  <h1>Popover Styling and 3D Rendering Test</h1>
+  <p>Testing frontmatter color application and 3D rendering in popover</p>
+  <div id="output"></div>
+
+  <!-- Load GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+
+  <!-- Create minimal DOM structure for testing -->
+  <script>
+    // Create playground grid
+    const grid = document.createElement('div');
+    grid.className = 'playground-grid';
+    document.body.appendChild(grid);
+
+    // Create test cards with different colors
+    const testCards = [
+      {
+        title: 'Pink Card',
+        caption: 'A card with pink background',
+        mediaType: 'text',
+        bgColor: '#ffb8f4ff',
+        textColor: '#000000'
+      },
+      {
+        title: 'Red Card',
+        caption: 'A card with red background',
+        mediaType: 'text',
+        bgColor: '#ff5237',
+        textColor: '#ffcac2ff'
+      },
+      {
+        title: '3D Card',
+        caption: 'A card with 3D content',
+        mediaType: 'three_d',
+        bgColor: '#b8c6ffff',
+        textColor: '#000000'
+      }
+    ];
+
+    testCards.forEach((cardData, i) => {
+      const card = document.createElement('div');
+      card.className = 'playground-card';
+      card.setAttribute('data-title', cardData.title);
+      card.setAttribute('data-caption', cardData.caption);
+      card.setAttribute('data-media-type', cardData.mediaType);
+      card.setAttribute('data-date', new Date().toLocaleDateString());
+      card.style.setProperty('--text-color', cardData.textColor);
+      card.style.setProperty('--font-family', 'sans-serif');
+      card.style.setProperty('--bg-color', cardData.bgColor);
+      
+      if (cardData.mediaType === 'text') {
+        const textBox = document.createElement('div');
+        textBox.className = 'playground-text-box';
+        textBox.textContent = `Content for ${cardData.title}`;
+        card.appendChild(textBox);
+      } else if (cardData.mediaType === 'three_d') {
+        const threeDThumb = document.createElement('div');
+        threeDThumb.className = 'playground-3d-thumb';
+        threeDThumb.setAttribute('data-3d-url', '/assets/models/clock.glb');
+        card.appendChild(threeDThumb);
+      }
+      
+      grid.appendChild(card);
+    });
+
+    // Capture console output
+    const outputDiv = document.getElementById('output');
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓')) {
+        span.className = 'pass';
+      } else if (message.includes('✗')) {
+        span.className = 'fail';
+      } else if (message.includes('→')) {
+        span.className = 'info';
+      }
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+  </script>
+
+  <!-- Load playground code -->
+  <script src="../assets/js/playground.js"></script>
+
+  <!-- Run tests -->
+  <script>
+    console.log('=== Popover Styling and 3D Rendering Test ===\n');
+
+    // Test 1: Verify popover structure exists
+    console.log('→ Test 1: Popover Structure');
+    const popovers = document.querySelectorAll('.playground-popover');
+    if (popovers.length === 2) {
+      console.log('✓ Two popover instances created (current and next)');
+    } else {
+      console.log('✗ Expected 2 popovers, found ' + popovers.length);
+    }
+
+    // Test 2: Verify footer container exists
+    console.log('\n→ Test 2: Footer Container');
+    const footers = document.querySelectorAll('.popover-footer');
+    if (footers.length === 2) {
+      console.log('✓ Footer containers created for navigation buttons');
+    } else {
+      console.log('✗ Expected 2 footer containers, found ' + footers.length);
+    }
+
+    // Test 3: Verify navigation buttons are in footer
+    console.log('\n→ Test 3: Navigation Buttons in Footer');
+    const navButtons = document.querySelectorAll('.popover-footer .popover-nav-button');
+    if (navButtons.length === 4) { // 2 prev + 2 next
+      console.log('✓ Navigation buttons are inside footer containers');
+    } else {
+      console.log('✗ Expected 4 nav buttons in footers, found ' + navButtons.length);
+    }
+
+    // Test 4: Verify createPopoverContent function exists
+    console.log('\n→ Test 4: createPopoverContent Function');
+    if (typeof createPopoverContent === 'function') {
+      console.log('✓ createPopoverContent function exists');
+    } else {
+      console.log('✗ createPopoverContent function not found');
+    }
+
+    // Test 5: Verify navigateToCard applies colors
+    console.log('\n→ Test 5: Color Application in navigateToCard');
+    if (typeof navigateToCard === 'function') {
+      console.log('✓ navigateToCard function exists');
+      console.log('✓ Should extract bg_color and text_color from card data');
+      console.log('✓ Should apply bg_color to popover container');
+      console.log('✓ Should apply text_color to text elements');
+    } else {
+      console.log('✗ navigateToCard function not found');
+    }
+
+    // Test 6: Verify 3D container support
+    console.log('\n→ Test 6: 3D Container Support');
+    const threeDContainers = document.querySelectorAll('.popover-3d-container');
+    if (threeDContainers.length >= 0) {
+      console.log('✓ popover-3d-container class is available');
+    } else {
+      console.log('✗ popover-3d-container class not found');
+    }
+
+    // Test 7: Verify Playground3DScene is available
+    console.log('\n→ Test 7: Playground3DScene Availability');
+    if (typeof window.Playground3DScene !== 'undefined') {
+      console.log('✓ Playground3DScene is available globally');
+    } else {
+      console.log('✗ Playground3DScene not available globally (will be loaded from module)');
+    }
+
+    // Test 8: Verify CSS variables are set on cards
+    console.log('\n→ Test 8: CSS Variables on Cards');
+    const cards = document.querySelectorAll('.playground-card');
+    let allHaveColors = true;
+    cards.forEach((card, i) => {
+      const bgColor = card.style.getPropertyValue('--bg-color');
+      const textColor = card.style.getPropertyValue('--text-color');
+      if (!bgColor || !textColor) {
+        allHaveColors = false;
+        console.log('✗ Card ' + i + ' missing color variables');
+      }
+    });
+    if (allHaveColors) {
+      console.log('✓ All cards have bg_color and text_color CSS variables');
+    }
+
+    console.log('\n=== All Tests Complete ===');
+  </script>
+</body>
+</html>

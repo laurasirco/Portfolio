@@ -5,11 +5,11 @@ layout: default
 
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
 
-    {% if page.video And page.video != "" And page.video != nil %}
+    {% if page.video and page.video != "" and page.video != nil %}
     <video class="center" controls>
         <source src="{{page.video}}#t=0.001" type="video/mp4">
     </video>
-    {% elsif page.vimeo And page.vimeo != "" And page.vimeo != nil %}
+    {% elsif page.vimeo and page.vimeo != "" and page.vimeo != nil %}
     <!-- <div style="padding:56.25% 0 0 0;position:relative;z-index:-1;">
         <iframe src="{{page.vimeo}}&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div> -->
@@ -33,7 +33,7 @@ layout: default
             </svg></h2>
     </div>
 
-    {% if page.studio And page.studio != "" And page.studio != nil %}
+    {% if page.studio and page.studio != "" and page.studio != nil %}
     <h2>{{ page.client }}, {{ page.studio }}</h2>
     {% else %}
     <h2>{{ page.client }}</h2>

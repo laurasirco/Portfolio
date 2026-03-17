@@ -11,6 +11,77 @@
     <link rel="stylesheet" href="/assets/css/app.css">
     <link rel="shortcut icon" type="image/png" href="/assets/img/favicon.png">
 
+    <!-- Smooth scroll CSS -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* ScrollSmoother wrapper needs the padding, not body */
+        #smooth-wrapper {
+            padding-top: 120px;
+        }
+        
+        @media (max-width: 768px) {
+            #smooth-wrapper {
+                padding-top: 100px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #smooth-wrapper {
+                padding-top: 90px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            #smooth-wrapper {
+                padding-top: 80px;
+            }
+        }
+
+        #smooth-content {
+            min-height: calc(100vh - 120px);
+            padding-bottom: 110px;
+        }
+
+        @media (max-width: 768px) {
+            #smooth-content {
+                min-height: calc(100vh - 100px);
+                padding-bottom: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #smooth-content {
+                min-height: calc(100vh - 90px);
+                padding-bottom: 90px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #smooth-content {
+                min-height: calc(100vh - 80px);
+                padding-bottom: 80px;
+            }
+        }
+    </style>
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollSmoother.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
+
+    {% if page.bg_color or page.text_color %}
+    <style>
+        :root {
+            {% if page.bg_color %}--bg-color: {{ page.bg_color }};{% endif %}
+            {% if page.text_color %}--text-color: {{ page.text_color }};{% endif %}
+        }
+    </style>
+    {% endif %}
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4X8JB2GCJ"></script>
     <script>
@@ -23,15 +94,24 @@
 </head>
 
 <body>
+    <!-- position: fixed elements can go outside -->
     {% include header.html %}
-
-    <section>
-        {{ content }}
-    </section>
-
     {% include footer.html %}
+    
+    <div id="smooth-wrapper">
+        <div id="smooth-content">
+            <section>
+                {{ content }}
+            </section>
+        </div>
+    </div>
+    
     <script src="/assets/js/logo.js"></script>
     <script src="/assets/js/slideshow.js"></script>
+    <script src="/assets/js/scroll-animations.js"></script>
+    <script src="/assets/js/welcome-text-animation.js"></script>
+    <script src="/assets/js/header-footer-colors.js"></script>
+    <script src="/assets/js/sticker-drag.js"></script>
 </body>
 
 </html>

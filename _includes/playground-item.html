@@ -1,0 +1,32 @@
+{% assign size = item.size | default: "1x1" %}
+{% assign expand_size = item.expand_size | default: "2x2" %}
+{% assign size_parts = size | split: "x" %}
+{% assign expand_size_parts = expand_size | split: "x" %}
+{% assign grid_col = size_parts[0] %}
+{% assign grid_row = size_parts[1] %}
+{% assign expand_grid_col = expand_size_parts[0] %}
+{% assign expand_grid_row = expand_size_parts[1] %}
+
+<div class="playground-item" data-size="{{ size }}" data-expand-size="{{ expand_size }}" data-grid-col="{{ grid_col }}" data-grid-row="{{ grid_row }}" data-expand-grid-col="{{ expand_grid_col }}" data-expand-grid-row="{{ expand_grid_row }}" data-bg-color="{{ item.bg_color }}" data-text-color="{{ item.text_color }}" data-media-type="{{ item.media_type }}" data-date="{{ item.date }}">
+    {% if item.media_type == "video" and item.media %}
+    <video autoplay muted class="playground-media playground-thumb avoid-clicks">
+        <source src="{{item.media}}" type="video/mp4">
+    </video>
+    {% elsif item.media_type == "image" and item.media %}
+    <img class="playground-media playground-thumb" src="{{item.media}}" alt="{{item.title}}">
+    {% elsif item.media_type == "gif" and item.media %}
+    <img class="playground-media playground-thumb" src="{{item.media}}" alt="{{item.title}}">
+    {% elsif item.media_type == "three_d" and item.media %}
+    <div class="playground-3d-thumb" data-3d-url="{{item.media}}"></div>
+    {% elsif item.media_type == "embed" and item.media %}
+    {{item.media}}
+    {% endif %}
+    
+    {% if item.caption %}
+    <p class="playground-caption">{{item.caption}}</p>
+    {% endif %}
+    
+    {% if item.discipline %}
+    <span class="playground-discipline">{{item.discipline}}</span>
+    {% endif %}
+</div>

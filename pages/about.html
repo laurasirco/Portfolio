@@ -5,10 +5,10 @@ permalink: /about/
 ---
 
 
-<div class="container header_margin footer_padding link-svgmarker">
-    <h2 class="marker_text">¡Hola!<svg class="link-svgline"><use xlink:href="#svg_marker"></use></svg></h2>
-    <div class="row align-items-start">
-        <div class="col">
+<div class="container header_margin footer_padding link-svgmarker about-page">
+    <h2>¡Hola!</h2>
+    <div class="row align-items-start g-4 about-content-row">
+        <div class="col-12 col-md-6">
             <p>
                 I'm Laura Sirvent, director and character designer based in Spain.
                 I'm always pulling influence from technology, Spanish pop culture, and XXI century consumerism, to
@@ -17,10 +17,9 @@ permalink: /about/
             <p>Know more about me <a href="https://www.thisisjelly.com/uk/news/introducing-laura-sirvent">here.</a></p>
 
             <p><a href="https://page-online.de/bild/portraet-der-woche-laura-sirvent/">PAGE</a></p>
-            <p><a href="https://bolprod.com/blog/interview-laura-sirvent/">BOL</a></p>
         </div>
-        <div class="col">
-            <img src="/assets/img/Laura-Sirvent.jpeg" style="max-width: 100%;">
+        <div class="col-12 col-md-6">
+            <img class="about-profile-image" src="/assets/img/Laura-Sirvent.jpeg" alt="Laura Sirvent portrait">
         </div>
     </div>
 
@@ -30,5 +29,9 @@ permalink: /about/
     <p class="mt-5 text-end">Reach me at <a href="mailto:hola@laurasirvent.com">hola@laurasirvent.com</a></p>
 
     <!-- <p class="mb-5 text-end">Represented in Europe by <a href="https://bolprod.com">BOL</a></p> -->
-</div>
 
+    {% assign about_stickers = site.data.stickers | where: "page", "about" %}
+    {% for sticker in about_stickers %}
+      {% include sticker-item.html sticker=sticker %}
+    {% endfor %}
+</div>

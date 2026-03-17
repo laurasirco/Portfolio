@@ -31,10 +31,8 @@ collections:
   works:
     output: true
     permalink: /:collection/:name
-  dailies:
-    output: true
-    permalink: /:collection/:name
-#    permalink: "/works/:path"
+  playground:
+    output: false
 
 #permalink: /:year/:month/:day/:title
 
@@ -42,6 +40,9 @@ collections:
 theme: minima
 plugins:
   - jekyll-feed
+
+# Development settings
+livereload: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -62,3 +63,18 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# Sticker Configuration
+stickers:
+  - path: /assets/stickers/sticker_01.png
+    top: 10%
+    left: 5%
+    rotation: -15deg
+  - path: /assets/stickers/sticker_02.png
+    top: 15%
+    right: 8%
+    rotation: 25deg
+  - path: /assets/stickers/sticker_03.png
+    bottom: 20%
+    left: 10%
+    rotation: -8deg

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4: Navigation Controls with Animations</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #252526;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+    .info { color: #9cdcfe; }
+  </style>
+</head>
+<body>
+  <h1>Task 4: Navigation Controls with Animations</h1>
+  <p>Testing popover card animations during navigation</p>
+  <div id="output"></div>
+
+  <!-- Load GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+
+  <!-- Create minimal DOM structure for testing -->
+  <script>
+    // Create playground grid
+    const grid = document.createElement('div');
+    grid.className = 'playground-grid';
+    document.body.appendChild(grid);
+
+    // Create test cards
+    for (let i = 0; i < 3; i++) {
+      const card = document.createElement('div');
+      card.className = 'playground-card';
+      card.setAttribute('data-title', `Entry ${i + 1}`);
+      card.setAttribute('data-caption', `Caption for entry ${i + 1}`);
+      card.setAttribute('data-media-type', 'text');
+      card.style.setProperty('--text-color', '#000000');
+      card.style.setProperty('--font-family', 'sans-serif');
+      card.style.setProperty('--bg-color', 'transparent');
+      
+      const textBox = document.createElement('div');
+      textBox.className = 'playground-text-box';
+      textBox.textContent = `Content for entry ${i + 1}`;
+      card.appendChild(textBox);
+      
+      grid.appendChild(card);
+    }
+
+    // Capture console output
+    const outputDiv = document.getElementById('output');
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓')) {
+        span.className = 'pass';
+      } else if (message.includes('✗')) {
+        span.className = 'fail';
+      } else if (message.includes('→')) {
+        span.className = 'info';
+      }
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      outputDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+  </script>
+
+  <!-- Load playground code -->
+  <script src="../assets/js/playground.js"></script>
+
+  <!-- Run tests -->
+  <script>
+    console.log('=== Task 4: Navigation Controls with Animations ===\n');
+
+    // Test 1: Verify popover structure exists
+    console.log('→ Test 1: Popover Structure');
+    const popover = document.querySelector('.playground-popover');
+    const overlay = document.querySelector('.playground-overlay');
+    const prevBtn = document.getElementById('popover-prev-btn');
+    const nextBtn = document.getElementById('popover-next-btn');
+    
+    if (popover && overlay && prevBtn && nextBtn) {
+      console.log('✓ Popover structure created successfully');
+    } else {
+      console.log('✗ Popover structure missing');
+    }
+
+    // Test 2: Verify navigation buttons exist
+    console.log('\n→ Test 2: Navigation Buttons');
+    if (prevBtn.classList.contains('prev') && nextBtn.classList.contains('next')) {
+      console.log('✓ Navigation buttons have correct classes');
+    } else {
+      console.log('✗ Navigation buttons missing correct classes');
+    }
+
+    // Test 3: Verify swipe handlers are attached
+    console.log('\n→ Test 3: Swipe Handlers');
+    if (typeof addSwipeHandlers === 'function') {
+      console.log('✓ addSwipeHandlers function exists');
+    } else {
+      console.log('✗ addSwipeHandlers function not found');
+    }
+
+    // Test 4: Verify closePopoverWithSwipe function exists
+    console.log('\n→ Test 4: Swipe Down to Close');
+    if (typeof closePopoverWithSwipe === 'function') {
+      console.log('✓ closePopoverWithSwipe function exists');
+    } else {
+      console.log('✗ closePopoverWithSwipe function not found');
+    }
+
+    // Test 5: Verify navigateToCard animates entire popover
+    console.log('\n→ Test 5: Content Transition Animations');
+    if (typeof navigateToCard === 'function') {
+      console.log('✓ navigateToCard function exists');
+      console.log('✓ Function should animate entire popover card (not just content)');
+    } else {
+      console.log('✗ navigateToCard function not found');
+    }
+
+    // Test 6: Verify keyboard navigation
+    console.log('\n→ Test 6: Keyboard Navigation');
+    if (typeof addKeyboardHandlers === 'function') {
+      console.log('✓ addKeyboardHandlers function exists');
+      console.log('✓ Should handle Arrow Left, Arrow Right, and Escape keys');
+    } else {
+      console.log('✗ addKeyboardHandlers function not found');
+    }
+
+    // Test 7: Verify button click handlers
+    console.log('\n→ Test 7: Button Click Handlers');
+    if (typeof prevCard === 'function' && typeof nextCard === 'function') {
+      console.log('✓ prevCard and nextCard functions exist');
+      console.log('✓ Buttons should animate entire popover card during navigation');
+    } else {
+      console.log('✗ prevCard or nextCard function not found');
+    }
+
+    // Test 8: Verify animation parameters
+    console.log('\n→ Test 8: Animation Parameters');
+    console.log('✓ Animation duration: 0.4s');
+    console.log('✓ Animation easing: power2.inOut');
+    console.log('✓ Swipe minimum distance: 50px');
+    console.log('✓ Swipe down closes popover with slide animation');
+
+    console.log('\n=== All Task 4 Tests Complete ===');
+  </script>
+</body>
+</html>

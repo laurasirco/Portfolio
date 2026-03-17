@@ -1,0 +1,94 @@
+- id: welcome_sticker_01
+  page: welcome
+  type: image
+  path: /assets/stickers/sticker_04.png
+  position:
+    top: 10%
+    left: 5%
+  rotation: -15deg
+  scale: 1
+  draggable: true
+
+- id: welcome_sticker_02
+  page: welcome
+  type: image
+  path: /assets/stickers/sticker_05.png
+  position:
+    top: 15%
+    right: 50%
+  rotation: 25deg
+  scale: 1.5
+  draggable: true
+
+- id: welcome_sticker_03
+  page: welcome
+  type: image
+  path: /assets/stickers/sticker_08.png
+  position:
+    bottom: 20%
+    left: 10%
+  rotation: -8deg
+  scale: 1.1
+  draggable: true
+
+- id: welcome_sticker_04
+  page: welcome
+  type: image
+  path: /assets/stickers/sticker_06.png
+  position:
+    bottom: 25%
+    right: 5%
+  rotation: 10deg
+  scale: 1.1
+  draggable: true
+
+- id: about_text_sticker_01
+  page: about
+  type: text
+  content: "<p>Worldwide representation by <a href='https://www.thisisjelly.com/eu'>Jelly</a></p>"
+  shape: rectangular
+  textColor: "#010002"
+  bgColor: "#d9ff56"
+  fontSize: "clamp(13px, 1.4vw, 18px)"
+  fontWeight: "var(--font-weight-sans-default)"
+  fontFamily: "var(--font-sans-serif)"
+  position:
+    bottom: 40%
+    left: 5%
+  rotation: -6deg
+  scale: 1
+  draggable: true
+
+- id: about_text_sticker_02
+  page: about
+  type: text
+  content: "<p><a href='mailto:hola@laurasirvent.com'>Say hi</a>!</p>"
+  shape: star8
+  textColor: "#010002"
+  bgColor: "#F47AD1"
+  fontSize: "clamp(12px, 1.2vw, 16px)"
+  fontWeight: "var(--font-weight-sans-default)"
+  fontFamily: "var(--font-sans-serif)"
+  position:
+    bottom: 38%
+    left: 24%
+  rotation: 4deg
+  scale: 1
+  draggable: true
+
+- id: about_text_sticker_03
+  page: about
+  type: text
+  content: "<p><a href='https://www.thisisjelly.com/uk/news/introducing-laura-sirvent'>Know more about me</a></p>"
+  shape: oval
+  textColor: "#ffffff"
+  bgColor: "#4c00ff"
+  fontSize: "clamp(12px, 1.2vw, 16px)"
+  fontWeight: "var(--font-weight-sans-default)"
+  fontFamily: "var(--font-sans-serif)"
+  position:
+    bottom: 48%
+    left: 26%
+  rotation: -5deg
+  scale: 1
+  draggable: true

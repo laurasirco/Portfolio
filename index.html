@@ -3,14 +3,19 @@ layout: default
 title: Laura Sirvent
 ---
 
-<section class="about_intro">
-  <h2>
-    I'm Laura Sirvent, director and character designer based in Spain.  
-    I create punchy 3D projects full of narratives, humor, and fun-loving characters.
-  </h2>
-</section>
+<section class="welcome-section">
+  <h1 class="welcome-text parallax-element">I'm Laura Sirvent, a director working at the intersection of technology, culture and character storytelling. I build playful worlds where code, design and observation turn everyday life into expressive narratives.</h1>
+  
+  <!-- Stickers -->
+  {% assign welcome_stickers = site.data.stickers | where: "page", "welcome" %}
+  {% if welcome_stickers.size == 0 %}
+    {% assign welcome_stickers = site.data.stickers %}
+  {% endif %}
 
-{% include works.html %}
+  {% for sticker in welcome_stickers %}
+    {% include sticker-item.html sticker=sticker %}
+  {% endfor %}
+</section>
 
 <script src="/assets/js/matter.min.js"></script>
 <script src="/assets/js/letters.js"></script>
