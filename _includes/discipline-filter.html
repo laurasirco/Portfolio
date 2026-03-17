@@ -1,9 +1,9 @@
 <div class="discipline-filter">
-    <a href="/playground/" class="filter-link active" data-filter="all">All</a>
+    <a href="/sketchbook/" class="filter-link active" data-filter="all">All</a>
     {% assign disciplines = site.playground | map: "discipline" | uniq | sort %}
     {% for discipline in disciplines %}
         {% if discipline %}
-        <a href="/playground/?filter={{discipline}}" class="filter-link" data-filter="{{discipline}}">{{discipline}}</a>
+        <a href="/sketchbook/?filter={{discipline}}" class="filter-link" data-filter="{{discipline}}">{{discipline}}</a>
         {% endif %}
     {% endfor %}
 </div>

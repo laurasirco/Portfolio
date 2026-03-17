@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update URL
       if (filter === 'all') {
-        window.history.pushState({}, '', '/playground/');
+        window.history.pushState({}, '', '/sketchbook/');
       } else {
-        window.history.pushState({}, '', `/playground/?filter=${filter}`);
+        window.history.pushState({}, '', `/sketchbook/?filter=${filter}`);
       }
       
       // Update active state

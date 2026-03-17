@@ -10,4 +10,4 @@ text_color: "#ffcac2ff"
 date: "2026-03-15"
 ---
 
-Sometimes the best ideas come from simple words and reflections. This is a space for quick thoughts, observations, and creative musings that don't need visual representation.
+Today I've updated my portfolio. A big update!
