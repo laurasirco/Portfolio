@@ -667,3 +667,110 @@ describe('Sticker Anchor Centering', () => {
 - Test layout responsiveness across all breakpoints
 - Test 3D models with all supported formats
 
+---
+
+## Addendum: Cambios March 18, 2026
+
+### A. Home: Color Influence Radius en Welcome
+
+- Extender modelo de sticker en `_data/stickers.yml` con:
+  - `influenceColor`
+  - `influenceRadius`
+- Crear motor de influencia de proximidad que:
+  - calcule distancia sticker->glyph o sticker->span en `welcome-text`
+  - aplique interpolación de color con falloff suave
+  - acumule múltiples influencias con prioridad por cercanía
+
+### B. Works: Masonry 2 Columnas
+
+- Migrar layout de listado Work a masonry de 2 columnas.
+- Las cards conservan altura natural de media, sin igualación por fila.
+- Estrategia recomendada:
+  - CSS columns (`column-count: 2`) o CSS masonry equivalente compatible.
+  - Fallback responsive para móvil en 1 columna.
+
+### C. Work Detail: Flechas Flotantes Prev/Next
+
+- Añadir controles laterales flotantes para navegación entre proyectos.
+- Resolver orden desde colección `site.works` con índice actual.
+- Asegurar soporte teclado (`ArrowLeft`, `ArrowRight`) y ARIA labels.
+
+### D. Sketchbook: Visibilidad de Tags y Agrupación por Día
+
+- Ocultar visualmente tags sin eliminar lógica.
+- Agrupar cards por fecha diaria (`day/month/year`) con:
+  - encabezado (`h3`) por grupo
+  - divisor horizontal entre grupos.
+- La renderización agrupada debe preservar orden cronológico definido por fecha.
+
+### E. Bugfix Popover Video Centrado
+
+- Revisar cálculo de posición del popover para media `video`.
+- Unificar ruta de centrado entre image/video/text/3D.
+- Recalcular en `resize` y cambio de orientación.
+
+### F. Scroll Lock Reutilizable para Interacciones Táctiles
+
+- Extraer utilidad compartida (ej. `touch-scroll-lock.js`) con API:
+  - `lock(contextId)`
+  - `unlock(contextId)`
+  - `isLocked()`
+- Reusar en:
+  - drag de stickers (About)
+  - interacción 3D en móvil (Sketchbook).
+
+### G. Drag Ligero en Cards de Sketchbook + Física Existente
+
+- Añadir drag manual de baja influencia sobre cards.
+- Mantener físicas de interacción entre cards.
+- Definir parámetros diferenciados respecto stickers:
+  - menor desplazamiento
+  - mayor fuerza de retorno
+  - damping superior.
+
+### H. Frontmatter 3D Avanzado
+
+Agregar soporte en entradas `media_type: three_d`:
+
+```yaml
+material_type: lambert | normal | matcap
+material_color: "#RRGGBB"
+wireframe: false
+cast_shadows: true
+```
+
+- Si el modelo no aporta material válido, aplicar fallback por frontmatter.
+- `matcap` cargará textura desde `assets/` (path configurable).
+
+### I. Configuración de Luces Three.js Simplificada
+
+- Centralizar al principio del módulo una config editable:
+  - `ambient`
+  - `key` (point)
+  - `fill` (point)
+  - `rim` (point)
+- Cada luz con `position`, `intensity`, `color`.
+
+### J. Calidad de Sombras y Aliasing
+
+- Mejorar sombras mediante:
+  - `shadow.mapSize`
+  - `shadow.bias` / `normalBias`
+  - filtros compatibles según rendimiento
+- Exponer presets de calidad (mobile/desktop) para balance visual/perf.
+
+### K. Sistema de Sonido de Interacción (Futuro)
+
+- Añadir un módulo reutilizable `interaction-sfx.js` con API mínima:
+  - `init(config)`
+  - `play(eventName)`
+  - `setEnabled(boolean)`
+  - `setVolume(number)`
+- Eventos candidatos:
+  - `sticker_hover`, `sticker_pick`, `sticker_drop`
+  - `card_hover`, `card_pick`, `card_drop`
+  - `popover_open`, `popover_close`
+- Requisitos técnicos:
+  - Preload/caching de audios cortos para latencia baja.
+  - Fail-safe: si no hay autoplay permission o falla audio, no romper UX.
+  - Control global de mute y respeto de preferencias de accesibilidad.

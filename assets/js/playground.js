@@ -5,6 +5,7 @@ let nextPopoverElement = null;
 let overlayElement = null;
 let allCards = [];
 let popoverJustOpened = false;
+let popoverPositionListeners = null;
 
 /**
  * Center popover using absolute positioning based on window center
@@ -25,6 +26,37 @@ function centerPopover(element) {
   
   element.style.left = centerX + 'px';
   element.style.top = centerY + 'px';
+}
+
+function recenterVisiblePopovers() {
+  [popoverElement, nextPopoverElement].forEach((el) => {
+    if (!el) return;
+    const isVisible = el.style.display !== 'none' && el.classList.contains('active');
+    if (isVisible) {
+      centerPopover(el);
+    }
+  });
+}
+
+function detachPopoverPositionListeners() {
+  if (!popoverPositionListeners) return;
+  window.removeEventListener('resize', popoverPositionListeners.update);
+  window.removeEventListener('orientationchange', popoverPositionListeners.update);
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', popoverPositionListeners.update);
+  }
+  popoverPositionListeners = null;
+}
+
+function attachPopoverPositionListeners() {
+  detachPopoverPositionListeners();
+  const update = () => recenterVisiblePopovers();
+  window.addEventListener('resize', update);
+  window.addEventListener('orientationchange', update);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', update);
+  }
+  popoverPositionListeners = { update };
 }
 
 // Create popover HTML structure with dual popover instances
@@ -167,11 +199,7 @@ function closePopoverWithSwipe() {
     return;
   }
   
-  // Clean up resize listener if it exists (iPhone fix)
-  if (popoverElement._resizeListener) {
-    window.removeEventListener('resize', popoverElement._resizeListener);
-    popoverElement._resizeListener = null;
-  }
+  detachPopoverPositionListeners();
   
   // Animate current popover slide down with fade out
   gsap.to(popoverElement, {
@@ -386,16 +414,8 @@ function openPopover(cardIndex) {
   // Center popover using absolute positioning
   centerPopover(popoverElement);
 
-  // Handle window resize to recalculate center when address bar visibility changes
-  const updatePopoverPosition = () => {
-    centerPopover(popoverElement);
-  };
-
-  // Add resize listener to recalculate position when address bar shows/hides
-  window.addEventListener('resize', updatePopoverPosition);
-
-  // Store listener reference for cleanup
-  popoverElement._resizeListener = updatePopoverPosition;
+  // Keep centered on viewport changes and iOS browser chrome changes.
+  attachPopoverPositionListeners();
 
   // Animate with GSAP bounce - slide up from bottom
   gsap.fromTo(popoverElement,
@@ -433,11 +453,7 @@ function closePopover() {
     return;
   }
   
-  // Clean up resize listener if it exists (iPhone fix)
-  if (popoverElement._resizeListener) {
-    window.removeEventListener('resize', popoverElement._resizeListener);
-    popoverElement._resizeListener = null;
-  }
+  detachPopoverPositionListeners();
   
   // Animate popover slide down
   gsap.to(popoverElement, {
@@ -631,7 +647,6 @@ function navigateToCard(cardIndex) {
  * Task 1: Apply background and text colors to popover
  * Task 3: Render 3D scene in popover
  * Task 4: Apply colors to all elements
- * Task 3 (Date Positioning): Position date over media in bottom-left corner
  */
 function createPopoverContent(card, title, caption, mediaType, textColor, fontFamily, bgColor) {
   const newContent = document.createElement('div');
@@ -665,6 +680,16 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       }
       
       wrapper.appendChild(video);
+
+      // Re-center popover when video metadata affects media height.
+      const recenterOnVideoReady = () => {
+        requestAnimationFrame(() => {
+          recenterVisiblePopovers();
+        });
+      };
+      video.addEventListener('loadedmetadata', recenterOnVideoReady);
+      video.addEventListener('loadeddata', recenterOnVideoReady);
+      video.addEventListener('canplay', recenterOnVideoReady);
       
       // Add invisible overlay to capture clicks
       const videoOverlay = document.createElement('div');
@@ -703,15 +728,6 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       
       wrapper.appendChild(fullscreenBtn);
       
-      // Add date overlay positioned absolutely in bottom-left corner
-      const dateOverlay = document.createElement('p');
-      dateOverlay.className = 'popover-date-overlay';
-      const dateStr = card.getAttribute('data-date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      dateOverlay.textContent = dateStr;
-      dateOverlay.style.setProperty("color", textColor, "important");
-      dateOverlay.style.fontFamily = fontFamily;
-      wrapper.appendChild(dateOverlay);
-      
       // Prevent video clicks from propagating to close handlers
       wrapper.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -729,15 +745,6 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       img.alt = title;
       imgWrapper.appendChild(img);
       
-      // Add date overlay positioned absolutely in bottom-left corner
-      const dateOverlay = document.createElement('p');
-      dateOverlay.className = 'popover-date-overlay';
-      const dateStr = card.getAttribute('data-date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      dateOverlay.textContent = dateStr;
-      dateOverlay.style.setProperty("color", textColor, "important");
-      dateOverlay.style.fontFamily = fontFamily;
-      imgWrapper.appendChild(dateOverlay);
-      
       newContent.appendChild(imgWrapper);
     } else if (mediaType === 'three_d') {
       // Task 3: Render 3D scene in popover
@@ -749,20 +756,11 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       // Apply background color to 3D container
       container.style.setProperty('background-color', bgColor, 'important');
       
-      // Create wrapper for 3D with date overlay
+      // Create wrapper for 3D
       const wrapper = document.createElement('div');
       wrapper.className = 'popover-media-wrapper';
       wrapper.style.setProperty('background-color', bgColor, 'important');
       wrapper.appendChild(container);
-      
-      // Add date overlay positioned absolutely in bottom-left corner
-      const dateOverlay = document.createElement('p');
-      dateOverlay.className = 'popover-date-overlay';
-      const dateStr = card.getAttribute('data-date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      dateOverlay.textContent = dateStr;
-      dateOverlay.style.setProperty("color", textColor, "important");
-      dateOverlay.style.fontFamily = fontFamily;
-      wrapper.appendChild(dateOverlay);
       
       newContent.appendChild(wrapper);
       
@@ -789,35 +787,14 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       textBox.style.setProperty('background-color', bgColor, 'important');
       newContent.appendChild(textBox);
       
-      // For text, add date below content (not overlay)
-      const dateEl = document.createElement('p');
-      dateEl.className = 'popover-date';
-      const dateStr = card.getAttribute('data-date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      dateEl.textContent = dateStr;
-      dateEl.style.setProperty("color", textColor, "important");
-      dateEl.style.fontFamily = fontFamily;
-      newContent.appendChild(dateEl);
     }
-  }
-  
-  // For non-text media types, date is already added as overlay
-  // For text media type, date is added below content
-  // Only add date here if it wasn't already added
-  if (mediaType !== 'text' && mediaElement) {
-    // Date already added as overlay above
-  } else if (!mediaElement) {
-    // No media element, add date at bottom
-    const dateEl = document.createElement('p');
-    dateEl.className = 'popover-date';
-    const dateStr = card.getAttribute('data-date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    dateEl.textContent = dateStr;
-    dateEl.style.setProperty("color", textColor, "important");
-    dateEl.style.fontFamily = fontFamily;
-    newContent.appendChild(dateEl);
   }
   
   // Apply background color to the entire content
   newContent.style.setProperty('background-color', bgColor, 'important');
+  requestAnimationFrame(() => {
+    recenterVisiblePopovers();
+  });
   
   return newContent;
 }

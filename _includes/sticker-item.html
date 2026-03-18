@@ -8,6 +8,8 @@
 {% assign sticker_right = sticker.position.right | default: sticker.right %}
 
 {% assign sticker_rotation = sticker.rotation | default: "0deg" %}
+{% assign sticker_influence_color = sticker.influenceColor | default: sticker.influence_color %}
+{% assign sticker_influence_radius = sticker.influenceRadius | default: sticker.influence_radius %}
 
 {% assign sticker_shape = sticker.shape | default: "rectangular" %}
 {% assign sticker_text_color = sticker.textColor | default: sticker.text_color | default: "var(--text-color)" %}
@@ -24,6 +26,8 @@
       data-sticker-type="image"
       data-scale="{{ sticker_scale }}"
       data-draggable="{{ sticker_draggable }}"
+      {% if sticker_influence_color %}data-influence-color="{{ sticker_influence_color }}"{% endif %}
+      {% if sticker_influence_radius %}data-influence-radius="{{ sticker_influence_radius }}"{% endif %}
       style="
         {% if sticker_top %}top: {{ sticker_top }};{% endif %}
         {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}
@@ -36,16 +40,23 @@
     </div>
   {% when "text" %}
     <div
-      class="sticker-wrapper sticker-text-wrapper sticker-shape-{{ sticker_shape }} parallax-element"
+      class="sticker-wrapper sticker-text-host parallax-element"
       data-sticker-type="text"
       data-scale="{{ sticker_scale }}"
       data-draggable="{{ sticker_draggable }}"
+      {% if sticker_influence_color %}data-influence-color="{{ sticker_influence_color }}"{% endif %}
+      {% if sticker_influence_radius %}data-influence-radius="{{ sticker_influence_radius }}"{% endif %}
       style="
         {% if sticker_top %}top: {{ sticker_top }};{% endif %}
         {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}
         {% if sticker_left %}left: {{ sticker_left }};{% endif %}
         {% if sticker_right %}right: {{ sticker_right }};{% endif %}
         transform: rotate({{ sticker_rotation }}) scale({{ sticker_scale }});
+      "
+    >
+      <div
+        class="sticker-text-wrapper sticker-shape-{{ sticker_shape }}"
+        style="
         color: {{ sticker_text_color }};
         background-color: {{ sticker_bg_color }};
         font-size: {{ sticker_font_size }};
@@ -53,8 +64,9 @@
         font-family: {{ sticker_font_family }};
         {% if sticker_shape == "svg" and sticker_svg_mask %}-webkit-mask-image: url('{{ sticker_svg_mask }}'); mask-image: url('{{ sticker_svg_mask }}'); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;{% endif %}
       "
-    >
-      <div class="sticker-text-content">{{ sticker.content }}</div>
+      >
+        <div class="sticker-text-content">{{ sticker.content }}</div>
+      </div>
     </div>
   {% when "3d" %}
     <div
@@ -64,6 +76,8 @@
       data-model-format="{{ sticker.format }}"
       data-scale="{{ sticker_scale }}"
       data-draggable="{{ sticker_draggable }}"
+      {% if sticker_influence_color %}data-influence-color="{{ sticker_influence_color }}"{% endif %}
+      {% if sticker_influence_radius %}data-influence-radius="{{ sticker_influence_radius }}"{% endif %}
       style="
         {% if sticker_top %}top: {{ sticker_top }};{% endif %}
         {% if sticker_bottom %}bottom: {{ sticker_bottom }};{% endif %}

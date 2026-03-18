@@ -14,6 +14,8 @@ class StickerDragSystem {
     this.options = {
       inertiaMultiplier: 0.5,
       scaleOnDrag: 1.15,
+      hoverScale: 1.04,
+      hoverDuration: 0.18,
       dragDuration: 0.2,
       returnDuration: 0.3,
       inertiaFriction: 0.375,
@@ -34,12 +36,16 @@ class StickerDragSystem {
     this.baseScale = parseFloat(this.element.dataset.scale) || 1;
     this.isTouchDragging = false;
     this.scrollLockState = null;
+    this.scrollLockContextId = `sticker-${Math.random().toString(36).slice(2, 10)}`;
     
     // Bind methods to preserve 'this' context
     this.startDrag = this.startDrag.bind(this);
     this.updateDrag = this.updateDrag.bind(this);
     this.endDrag = this.endDrag.bind(this);
     this.preventPageTouchScroll = this.preventPageTouchScroll.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.getViewportBoundsForCurrentSticker = this.getViewportBoundsForCurrentSticker.bind(this);
     
     this.init();
   }
@@ -53,9 +59,33 @@ class StickerDragSystem {
     // Mouse down / Touch start
     this.element.addEventListener('mousedown', this.startDrag);
     this.element.addEventListener('touchstart', this.startDrag, { passive: false });
+    this.element.addEventListener('mouseenter', this.onMouseEnter);
+    this.element.addEventListener('mouseleave', this.onMouseLeave);
 
     // Set initial cursor
     this.element.style.cursor = 'grab';
+  }
+
+  onMouseEnter() {
+    if (this.isDragging) return;
+    this.element.classList.add('is-sticker-hovered');
+    if (typeof gsap === 'undefined') return;
+    gsap.to(this.element, {
+      scale: this.baseScale * this.options.hoverScale,
+      duration: this.options.hoverDuration,
+      ease: 'power2.out'
+    });
+  }
+
+  onMouseLeave() {
+    if (this.isDragging) return;
+    this.element.classList.remove('is-sticker-hovered');
+    if (typeof gsap === 'undefined') return;
+    gsap.to(this.element, {
+      scale: this.baseScale,
+      duration: this.options.hoverDuration,
+      ease: 'power2.out'
+    });
   }
 
   startDrag(e) {
@@ -68,6 +98,12 @@ class StickerDragSystem {
     
     this.isDragging = true;
     this.isTouchDragging = e.type.includes('touch');
+    this.element.classList.add('is-sticker-dragging');
+    this.element.classList.remove('is-sticker-hovered');
+    this.element.classList.remove('is-sticker-settling');
+    this.element.dispatchEvent(new CustomEvent('sticker:dragstart', { bubbles: true }));
+    document.documentElement.classList.add('sticker-dragging-global');
+    document.body.classList.add('sticker-dragging-global');
 
     if (this.isTouchDragging) {
       e.preventDefault();
@@ -154,8 +190,12 @@ class StickerDragSystem {
     const currentLeft = parseFloat(this.element.style.left) || rect.left + window.scrollX - rect.width / 2;
     const currentTop = parseFloat(this.element.style.top) || rect.top + window.scrollY - rect.height / 2;
     
-    const newX = currentLeft + moveX;
-    const newY = currentTop + moveY;
+    let newX = currentLeft + moveX;
+    let newY = currentTop + moveY;
+
+    const viewportBounds = this.getViewportBoundsForCurrentSticker(rect.width, rect.height);
+    newX = Math.max(viewportBounds.minX, Math.min(newX, viewportBounds.maxX));
+    newY = Math.max(viewportBounds.minY, Math.min(newY, viewportBounds.maxY));
 
     // Update sticker position
     this.element.style.left = newX + 'px';
@@ -164,9 +204,27 @@ class StickerDragSystem {
     this.element.style.bottom = 'auto';
   }
 
+  getViewportBoundsForCurrentSticker(stickerWidth, stickerHeight) {
+    const minX = window.scrollX;
+    const minY = window.scrollY;
+    const maxX = window.scrollX + window.innerWidth - stickerWidth;
+    const maxY = window.scrollY + window.innerHeight - stickerHeight;
+
+    return {
+      minX,
+      minY,
+      maxX: Math.max(minX, maxX),
+      maxY: Math.max(minY, maxY)
+    };
+  }
+
   endDrag(e) {
     if (!this.isDragging) return;
     this.isDragging = false;
+    const releaseVelocity = { x: this.velocity.x, y: this.velocity.y };
+    this.element.classList.remove('is-sticker-dragging');
+    document.documentElement.classList.remove('sticker-dragging-global');
+    document.body.classList.remove('sticker-dragging-global');
 
     if (e && e.type && e.type.includes('touch') && e.cancelable) {
       e.preventDefault();
@@ -197,6 +255,7 @@ class StickerDragSystem {
 
       // Apply inertia if velocity is significant
       if (Math.abs(this.velocity.x) > this.options.minVelocity || Math.abs(this.velocity.y) > this.options.minVelocity) {
+        this.element.classList.add('is-sticker-settling');
         const currentX = parseFloat(this.element.style.left) || 0;
         const currentY = parseFloat(this.element.style.top) || 0;
 
@@ -219,9 +278,26 @@ class StickerDragSystem {
           left: finalX,
           top: finalY,
           duration: this.options.inertiaDuration,
-          ease: 'power1.out'
+          ease: 'power1.out',
+          onComplete: () => {
+            this.element.classList.remove('is-sticker-settling');
+            this.element.dispatchEvent(new CustomEvent('sticker:dragend', {
+              bubbles: true,
+              detail: { velocity: releaseVelocity }
+            }));
+          }
         });
+      } else {
+        this.element.dispatchEvent(new CustomEvent('sticker:dragend', {
+          bubbles: true,
+          detail: { velocity: releaseVelocity }
+        }));
       }
+    } else {
+      this.element.dispatchEvent(new CustomEvent('sticker:dragend', {
+        bubbles: true,
+        detail: { velocity: releaseVelocity }
+      }));
     }
 
     // Reset cursor and z-index
@@ -242,14 +318,21 @@ class StickerDragSystem {
 
   lockPageScroll() {
     if (this.scrollLockState) return;
-
     this.scrollLockState = { locked: true };
-    document.addEventListener('touchmove', this.preventPageTouchScroll, { passive: false });
+    if (window.TouchScrollLock && typeof window.TouchScrollLock.lock === 'function') {
+      window.TouchScrollLock.lock(this.scrollLockContextId);
+    } else {
+      document.addEventListener('touchmove', this.preventPageTouchScroll, { passive: false });
+    }
   }
 
   unlockPageScroll() {
     if (!this.scrollLockState) return;
-    document.removeEventListener('touchmove', this.preventPageTouchScroll, { passive: false });
+    if (window.TouchScrollLock && typeof window.TouchScrollLock.unlock === 'function') {
+      window.TouchScrollLock.unlock(this.scrollLockContextId);
+    } else {
+      document.removeEventListener('touchmove', this.preventPageTouchScroll, { passive: false });
+    }
     this.scrollLockState = null;
   }
 

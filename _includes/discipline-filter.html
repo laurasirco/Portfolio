@@ -1,4 +1,4 @@
-<div class="discipline-filter">
+<div class="discipline-filter is-hidden" aria-hidden="true">
     <a href="/sketchbook/" class="filter-link active" data-filter="all">All</a>
     {% assign disciplines = site.playground | map: "discipline" | uniq | sort %}
     {% for discipline in disciplines %}

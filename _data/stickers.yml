@@ -2,6 +2,8 @@
   page: welcome
   type: image
   path: /assets/stickers/sticker_04.png
+  influenceColor: "#ff0000"
+  influenceRadius: 200
   position:
     top: 10%
     left: 5%
@@ -13,6 +15,8 @@
   page: welcome
   type: image
   path: /assets/stickers/sticker_05.png
+  influenceColor: "#00ffff"
+  influenceRadius: 200
   position:
     top: 15%
     right: 50%
@@ -24,6 +28,8 @@
   page: welcome
   type: image
   path: /assets/stickers/sticker_08.png
+  influenceColor: "#11ff00"
+  influenceRadius: 200
   position:
     bottom: 20%
     left: 10%
@@ -35,6 +41,8 @@
   page: welcome
   type: image
   path: /assets/stickers/sticker_06.png
+  influenceColor: "#FFee00"
+  influenceRadius: 200
   position:
     bottom: 25%
     right: 5%

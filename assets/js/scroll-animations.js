@@ -278,6 +278,44 @@ function initWorksPageAnimations() {
 }
 
 /**
+ * Initialize sketchbook page fade-in animations
+ * Mirrors About/Works behavior with per-day staggered reveal.
+ */
+function initSketchbookPageAnimations() {
+  const isSketchbookPage = window.location.pathname.includes('/sketchbook');
+  if (!isSketchbookPage) return;
+
+  const daySections = document.querySelectorAll('.sketchbook-day-section');
+  if (daySections.length === 0) return;
+
+  daySections.forEach((section) => {
+    const animatedElements = section.querySelectorAll(
+      '.sketchbook-day-divider, .sketchbook-day-heading, .playground-card'
+    );
+
+    if (animatedElements.length === 0) return;
+
+    gsap.set(animatedElements, {
+      opacity: 0,
+      y: ABOUT_FADE_START_Y
+    });
+
+    gsap.to(animatedElements, {
+      opacity: 1,
+      y: 0,
+      duration: ABOUT_FADE_DURATION,
+      stagger: ABOUT_STAGGER_DELAY,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+  });
+}
+
+/**
  * Initialize individual portfolio entry animations
  */
 function initPortfolioEntryAnimations() {
@@ -343,6 +381,9 @@ function initParallaxAnimations() {
   
   // Initialize works page animations
   initWorksPageAnimations();
+
+  // Initialize sketchbook page animations
+  initSketchbookPageAnimations();
   
   // Initialize individual portfolio entry animations (this adds parallax classes)
   initPortfolioEntryAnimations();

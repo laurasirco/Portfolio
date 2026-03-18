@@ -411,6 +411,132 @@ Este plan implementa mejoras y refinamientos para el portfolio, modernizando la 
   - Verificar que coverage es completo
   - Preguntar al usuario si hay preguntas o problemas
 
+- [x] 15. Sketchbook - Ocultar tags visualmente
+  - [x] 15.1 Ocultar sección de tags sin eliminar lógica de filtrado
+    - Mantener hooks/datos para futura reactivación
+    - _Requisitos: 22.1, 22.2, 22.3_
+
+- [x] 16. Bugfix - Centrado de popover de video
+  - [x] 16.1 Corregir cálculo de centrado de popover para media video
+    - Unificar posicionamiento con otros tipos de popover
+    - Recalcular en resize/orientation change
+    - _Requisitos: 24.1, 24.2, 24.3_
+
+  - [ ]* 16.2 Escribir tests de centrado de popover
+    - _Requisitos: 24.1, 24.2_
+
+- [ ] 17. Works - Convertir listado a 2-column masonry
+  - [x] 17.1 Implementar layout masonry en `pages/work.html`/CSS
+    - Usar estrategia sin forzar alturas por fila
+    - Mantener responsive (1 columna en móvil, 2 en desktop/tablet)
+    - _Requisitos: 20.1, 20.2, 20.3, 20.4_
+
+  - [ ]* 17.2 Escribir tests visuales/DOM para masonry
+    - Validar que no hay igualación artificial de filas
+    - _Requisitos: 20.2, 20.3_
+
+- [x] 18. Work Detail - Flechas flotantes prev/next
+  - [x] 18.1 Añadir UI flotante lateral en layout de detalle
+    - Flecha izquierda: trabajo anterior
+    - Flecha derecha: siguiente trabajo
+    - _Requisitos: 21.1, 21.2_
+
+  - [x] 18.2 Añadir accesibilidad y teclado
+    - ARIA labels
+    - Soporte `ArrowLeft` y `ArrowRight`
+    - _Requisitos: 21.3_
+
+  - [ ]* 18.3 Escribir tests de navegación prev/next
+    - _Requisitos: 21.2, 21.3, 21.4_
+
+- [x] 19. Sketchbook - Agrupar cards por día con divisores
+  - [x] 19.1 Agrupar entries por fecha diaria en render server-side
+    - Añadir encabezado de fecha (`h3`) por grupo
+    - Insertar divisor horizontal entre grupos
+    - _Requisitos: 23.1, 23.2, 23.3, 23.4_
+
+  - [ ]* 19.2 Escribir tests de agrupación por día
+    - _Requisitos: 23.1, 23.4_
+
+- [x] 20. Extraer utilidad reutilizable de touch scroll lock
+  - [x] 20.1 Crear módulo compartido de lock/unlock táctil
+    - API propuesta: `lock(contextId)`, `unlock(contextId)`, `isLocked()`
+    - _Requisitos: 25.1_
+
+  - [x] 20.2 Migrar Sticker drag a la utilidad compartida
+    - Reemplazar implementación ad hoc en `sticker-drag.js`
+    - _Requisitos: 25.2, 25.3, 25.4_
+
+  - [x] 20.3 Integrar lock temporal al interactuar con 3D en móvil
+    - Activar durante drag/orbit/interaction y liberar al finalizar
+    - _Requisitos: 25.2, 25.3, 25.4_
+
+- [x] 21. Home - Color influence de stickers sobre Welcome
+  - [x] 21.1 Extender YAML de stickers con `influenceColor` y `influenceRadius`
+    - Añadir propiedades en `_data/stickers.yml` para stickers de `page: welcome`
+    - Definir defaults seguros si faltan valores
+    - _Requisitos: 19.2, 19.3_
+
+  - [x] 21.2 Implementar motor de influencia por proximidad en welcome
+    - Detectar distancia entre sticker y letras/spans de welcome text
+    - Aplicar color con falloff suave según radio
+    - Resolver influencia de múltiples stickers activos
+    - _Requisitos: 19.1, 19.4_
+
+  - [x]* 21.3 Escribir tests para influencia radial de color
+    - Validar entrada/salida de radio y transición de color
+    - _Requisitos: 19.1, 19.4_
+
+- [ ] 22. Sketchbook cards draggables con baja influencia
+  - [ ] 22.1 Añadir drag manual ligero sobre cards
+    - Menor desplazamiento y mayor retorno que stickers
+    - _Requisitos: 26.1, 26.3, 26.4_
+
+  - [ ] 22.2 Mantener integración con físicas entre cards
+    - No romper interacciones Matter.js existentes
+    - _Requisitos: 26.2_
+
+  - [ ]* 22.3 Escribir tests de convivencia drag+física
+    - _Requisitos: 26.1, 26.2, 26.3_
+
+- [ ] 23. Three.js avanzado para Sketchbook 3D
+  - [ ] 23.1 Soportar frontmatter de material/sombras
+    - `material_type`, `material_color`, `wireframe`, `cast_shadows`
+    - _Requisitos: 27.1, 27.3_
+
+  - [ ] 23.2 Implementar modo `matcap` con textura en assets
+    - Cargar textura matcap y aplicarla según frontmatter
+    - _Requisitos: 27.2_
+
+  - [ ] 23.3 Centralizar configuración de luces editable
+    - Ambient + key/fill/rim con posición/intensidad/color
+    - _Requisitos: 28.1, 28.2, 28.3, 28.4_
+
+  - [ ] 23.4 Mejorar calidad de sombras (antialiasing)
+    - Ajustar mapSize/bias/normalBias y filtros
+    - Definir presets mobile/desktop
+    - _Requisitos: 29.1, 29.2, 29.3_
+
+  - [ ]* 23.5 Escribir tests de frontmatter 3D y render settings
+    - _Requisitos: 27.1, 27.2, 28.1, 29.1_
+
+- [ ] 24. Sistema de efectos de sonido para interacciones (futuro)
+  - [ ] 24.1 Crear módulo `interaction-sfx.js` con configuración centralizada
+    - API: init/play/setEnabled/setVolume
+    - _Requisitos: 30.1, 30.2, 30.5_
+
+  - [ ] 24.2 Integrar SFX en stickers, cards y popovers
+    - Hover/pick/drop/open/close según evento
+    - _Requisitos: 30.1_
+
+  - [ ] 24.3 Añadir preload/cache y fallback silencioso
+    - Sin bloqueo si autoplay/audio falla
+    - _Requisitos: 30.3, 30.5_
+
+  - [ ]* 24.4 Añadir control global de mute/volumen
+    - Preferencias persistentes y accesibilidad
+    - _Requisitos: 30.4_
+
 ## Notas
 
 - Las tareas marcadas con `*` son opcionales y pueden saltarse para MVP más rápido

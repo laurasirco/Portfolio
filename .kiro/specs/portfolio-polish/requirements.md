@@ -19,7 +19,7 @@ Este spec define mejoras y refinamientos para el portfolio, enfocándose en la e
 - **Popover**: Elemento emergente que muestra información adicional
 - **Welcome**: Página de inicio del portfolio
 - **About**: Página de información personal
-- **Playground**: Página de proyectos interactivos
+- **Sketchbook**: Página de proyectos interactivos (antes "Playground")
 
 ## Requirements
 
@@ -244,3 +244,159 @@ Este spec define mejoras y refinamientos para el portfolio, enfocándose en la e
 3. THE animation duration SHALL be smooth and responsive
 4. WHEN mouse leaves the image, THE zoom SHALL revert smoothly to original size
 
+---
+
+### Requirement 19: Home - Influencia de Color de Stickers sobre Welcome Text
+
+**User Story:** Como diseñador, quiero que los stickers flotantes en Home también influyan en el color del texto Welcome dentro de un radio, para crear una interacción visual más rica.
+
+#### Acceptance Criteria
+
+1. WHEN a floating sticker is near Welcome text glyphs, THE Welcome_Text_System SHALL apply a color influence falloff based on distance
+2. EACH sticker SHALL define a preconfigured influence color in `stickers.yml`
+3. THE system SHALL support a configurable influence radius per sticker (or global default)
+4. WHEN no sticker is inside influence radius, THE text SHALL return to its base color without abrupt jumps
+
+---
+
+### Requirement 20: Works - Layout Masonry en 2 Columnas
+
+**User Story:** Como usuario, quiero que el listado de Works se muestre en 2 columnas tipo masonry, para que las alturas variables de imagen se aprovechen mejor visualmente.
+
+#### Acceptance Criteria
+
+1. THE Works page SHALL render cards in two visual columns
+2. EACH card height SHALL be defined by its media content height
+3. CARDS in left and right column SHALL NOT be forced to equal row heights
+4. THE layout SHALL remain responsive and stable across desktop and mobile breakpoints
+
+---
+
+### Requirement 21: Work Detail - Navegación Flotante Anterior/Siguiente
+
+**User Story:** Como usuario, quiero flechas flotantes a ambos lados en detalle de proyecto para navegar al trabajo anterior o siguiente fácilmente.
+
+#### Acceptance Criteria
+
+1. WHEN viewing a work detail page, THE Work_Detail_UI SHALL display floating prev/next arrows
+2. PREV/NEXT navigation SHALL resolve correctly according to work ordering
+3. THE arrows SHALL be accessible via keyboard and have clear aria-labels
+4. ON mobile, THE controls SHALL remain usable without tap conflicts with scroll
+
+---
+
+### Requirement 22: Sketchbook - Ocultar Visualmente Tags Manteniendo Lógica
+
+**User Story:** Como diseñador, quiero quitar la sección visible de tags en Sketchbook sin eliminar la funcionalidad subyacente para poder reactivarla más adelante.
+
+#### Acceptance Criteria
+
+1. THE tags UI SHALL NOT be visible in Sketchbook
+2. TAG metadata and filtering logic SHALL remain available in code
+3. Hidden tags behavior SHALL NOT break card rendering or popover behavior
+
+---
+
+### Requirement 23: Sketchbook - Agrupación por Día con Divisores
+
+**User Story:** Como usuario, quiero ver las cards de Sketchbook agrupadas por fecha con separadores visibles, para entender mejor la cronología.
+
+#### Acceptance Criteria
+
+1. CARDS SHALL be grouped by day (`day/month/year`)
+2. EACH group SHALL render a visible heading (e.g. `h3`) with date label
+3. GROUPS SHALL be separated by a horizontal divider line
+4. MULTIPLE cards on the same date SHALL appear under the same date heading
+
+---
+
+### Requirement 24: Sketchbook Popover - Corregir Centrado de Video
+
+**User Story:** Como usuario, quiero que el popover de video se centre correctamente en pantalla, para una experiencia consistente con otros contenidos.
+
+#### Acceptance Criteria
+
+1. WHEN opening a video popover, THE Popover_System SHALL center the modal in viewport
+2. THE popover SHALL NOT render shifted downward unexpectedly
+3. THE centering SHALL remain correct on resize/orientation change
+
+---
+
+### Requirement 25: Extraer Utilidad Reutilizable de Bloqueo de Scroll Táctil
+
+**User Story:** Como desarrollador, quiero reutilizar la lógica de bloqueo temporal de scroll táctil en varias interacciones (stickers, 3D), para evitar duplicación y bugs inconsistentes.
+
+#### Acceptance Criteria
+
+1. THE codebase SHALL expose a reusable utility/module for temporary touch scroll lock
+2. STICKER drag and mobile 3D interaction SHALL consume the same utility
+3. SCROLL lock SHALL enable only during interaction and restore cleanly on end/cancel
+4. THE utility SHALL avoid visual jump/regression on iOS Safari
+
+---
+
+### Requirement 26: Sketchbook Cards Draggables con Influencia Baja
+
+**User Story:** Como usuario, quiero arrastrar ligeramente las cards de Sketchbook como stickers, pero con fuerza de retorno para que no se desordenen demasiado.
+
+#### Acceptance Criteria
+
+1. WHEN dragging a Sketchbook card, THE card SHALL move with low influence compared to sticker drag
+2. THE physics system SHALL keep interaction between cards enabled
+3. AFTER release, cards SHALL tend to settle back near their original placement
+4. THE drag interaction SHALL work on mouse and touch
+
+---
+
+### Requirement 27: Three.js Frontmatter de Material y Sombras para Items 3D
+
+**User Story:** Como diseñador, quiero configurar material y sombras de entradas 3D desde frontmatter para tener control artístico sin tocar JS.
+
+#### Acceptance Criteria
+
+1. THE frontmatter for `media_type: three_d` SHALL support:
+   - `material_type` (`lambert`, `normal`, `matcap`)
+   - `material_color` (fallback si el modelo no trae material útil)
+   - `wireframe` (boolean)
+   - `cast_shadows` (boolean)
+2. WHEN `material_type: matcap`, THE renderer SHALL use a matcap texture from assets
+3. IF frontmatter options are absent, THE renderer SHALL use sensible defaults
+
+---
+
+### Requirement 28: Configuración Clara de Luces Three.js (Ambient + Key/Fill/Rim)
+
+**User Story:** Como diseñador, quiero editar fácil la configuración de luces (posición, intensidad, color) al principio del código, para iterar el look sin fricción.
+
+#### Acceptance Criteria
+
+1. THREE.js lighting config SHALL be centralized in a clear top-level object/module
+2. THE setup SHALL include ambient light plus three point lights: key, fill, rim
+3. EACH light SHALL expose editable `position`, `intensity`, and `color`
+4. Light changes SHALL apply consistently to all 3D Sketchbook items
+
+---
+
+### Requirement 29: Mejorar Calidad de Sombras y Reducir Aliasing
+
+**User Story:** Como diseñador, quiero sombras más limpias en 3D para evitar aliasing visible en los objetos.
+
+#### Acceptance Criteria
+
+1. THE renderer SHALL improve shadow quality via shadow map configuration (resolution/bias/filtering)
+2. SHADOW edges SHALL exhibit less aliasing under typical camera distances
+3. QUALITY tuning SHALL preserve acceptable performance on desktop and mobile
+
+---
+
+### Requirement 30: Sistema de Efectos de Sonido para Interacciones (Futuro)
+
+**User Story:** Como usuario, quiero feedback sonoro sutil en interacciones (hover/drag/open/close) para reforzar la sensación táctil del portfolio.
+
+#### Acceptance Criteria
+
+1. THE UI SHALL support optional interaction SFX for stickers, sketchbook cards, and popovers
+2. THE sound system SHALL expose centralized config (volume, enabled flag, per-event sound map)
+3. THE implementation SHALL preload/cache audio assets to avoid lag on first interaction
+4. THE system SHALL include a global mute/disable option and respect reduced-motion/accessibility preferences
+5. IF audio fails to load/play, THE UI SHALL continue without blocking interaction

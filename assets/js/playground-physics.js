@@ -3,6 +3,7 @@ let mousePos = { x: 0, y: 0 };
 let cards = [];
 let debugMode = false; // Toggle with Ctrl+D
 let gridDebugMode = false; // Toggle with Ctrl+G
+let scrollSyncQueued = false;
 
 // Expose cards array globally for expansion/collapse physics updates
 window.cards = cards;
@@ -237,7 +238,7 @@ class CardPhysics {
 
 function initPhysics() {
   const cardElements = document.querySelectorAll('.playground-card');
-  const gridElement = document.querySelector('.playground-grid');
+  const gridElement = document.querySelector('.sketchbook-groups') || document.querySelector('.playground-grid');
   
   if (cardElements.length === 0) {
     console.warn('No playground cards found');
@@ -284,6 +285,44 @@ function initPhysics() {
   });
 }
 
+function syncPhysicsToCurrentLayout() {
+  const gridElement = document.querySelector('.sketchbook-groups') || document.querySelector('.playground-grid');
+  const gridRect = gridElement ? gridElement.getBoundingClientRect() : null;
+  const gridBounds = gridRect ? {
+    left: gridRect.left,
+    right: gridRect.right,
+    top: gridRect.top,
+    bottom: gridRect.bottom
+  } : null;
+
+  cards.forEach((card) => {
+    if (!card || !card.element) return;
+
+    const rect = card.element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Preserve current physics offset while re-anchoring grid position to live DOM.
+    const offsetX = card.x - card.gridX;
+    const offsetY = card.y - card.gridY;
+
+    // Re-anchor target grid position to live DOM layout but keep current
+    // dynamic position/velocity untouched to avoid freezing motion.
+    card.gridX = centerX - offsetX;
+    card.gridY = centerY - offsetY;
+    card.gridBounds = gridBounds;
+  });
+}
+
+function queueScrollSync() {
+  if (scrollSyncQueued) return;
+  scrollSyncQueued = true;
+  requestAnimationFrame(() => {
+    syncPhysicsToCurrentLayout();
+    scrollSyncQueued = false;
+  });
+}
+
 // Toggle debug mode with Ctrl+D
 document.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.key === 'd') {
@@ -308,7 +347,7 @@ document.addEventListener('keydown', (e) => {
     gridDebugMode = !gridDebugMode;
     console.log('Grid debug mode:', gridDebugMode ? 'ON' : 'OFF');
     
-    const grid = document.querySelector('.playground-grid');
+    const grid = document.querySelector('.sketchbook-groups') || document.querySelector('.playground-grid');
     if (!grid) return;
     
     if (gridDebugMode) {
@@ -424,6 +463,7 @@ if (document.readyState === 'loading') {
 // Handle window resize - recalculate grid positions with debounce
 let resizeTimeout;
 window.addEventListener('resize', function() {
+  queueScrollSync();
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(function() {
     // Reinitialize physics for all visible cards
@@ -444,6 +484,13 @@ window.addEventListener('resize', function() {
     console.log('Physics reinitialized after resize for', cards.length, 'cards');
   }, 300);
 });
+
+// Keep physics aligned while scrolling (native + smooth scroll wrappers).
+window.addEventListener('scroll', queueScrollSync, { passive: true });
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('scroll', queueScrollSync, { passive: true });
+  window.visualViewport.addEventListener('resize', queueScrollSync, { passive: true });
+}
 
 // Handle discipline filter changes - reinitialize physics for visible cards
 document.addEventListener('click', function(e) {

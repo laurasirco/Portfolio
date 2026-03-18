@@ -59,6 +59,8 @@ await test('About page renders stickers via unified include and page filter', as
 await test('Sticker shape CSS supports oval, star8 and octagon masks', async () => {
   const css = await fs.readFile(path.join(projectRoot, 'assets/css/app.scss'), 'utf8');
 
+  assert.match(css, /\.sticker-wrapper\s*\{[\s\S]*width:\s*max-content;/);
+  assert.match(css, /\.sticker-text-host\s*\{[\s\S]*width:\s*max-content;/);
   assert.match(css, /\.sticker-text-wrapper\.sticker-shape-oval/);
   assert.match(css, /\.sticker-text-wrapper\.sticker-shape-star8/);
   assert.match(css, /\.sticker-text-wrapper\.sticker-shape-octagon/);

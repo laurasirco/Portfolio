@@ -1,6 +1,49 @@
 ---
 layout: default
 ---
+
+{% assign works = site.works | sort: "year" | reverse %}
+{% assign current_index = nil %}
+{% for work_item in works %}
+  {% if work_item.url == page.url %}
+    {% assign current_index = forloop.index0 %}
+  {% endif %}
+{% endfor %}
+
+{% assign previous_work = nil %}
+{% assign next_work = nil %}
+{% if current_index != nil %}
+  {% assign previous_index = current_index | minus: 1 %}
+  {% assign next_index = current_index | plus: 1 %}
+  {% if previous_index >= 0 %}
+    {% assign previous_work = works[previous_index] %}
+  {% endif %}
+  {% if next_index < works.size %}
+    {% assign next_work = works[next_index] %}
+  {% endif %}
+{% endif %}
+
+{% if previous_work %}
+<a
+  class="work-nav-arrow work-nav-prev"
+  href="{{ previous_work.url }}"
+  aria-label="Previous work: {{ previous_work.title }}"
+  title="Previous: {{ previous_work.title }}"
+>
+  ←
+</a>
+{% endif %}
+{% if next_work %}
+<a
+  class="work-nav-arrow work-nav-next"
+  href="{{ next_work.url }}"
+  aria-label="Next work: {{ next_work.title }}"
+  title="Next: {{ next_work.title }}"
+>
+  →
+</a>
+{% endif %}
+
 <div class="work_page container header_margin footer_padding link-svgmarker">
 
     <!-- <a class="d-flex my-3" href="/work">Back</a> -->
@@ -54,4 +97,154 @@ layout: default
     let color = "{{page.bg_color}}";
     console.log(color);
     $("body").css("background-color", color);
+</script>
+
+<script>
+  (function() {
+    const prevUrl = {% if previous_work %}"{{ previous_work.url }}"{% else %}null{% endif %};
+    const nextUrl = {% if next_work %}"{{ next_work.url }}"{% else %}null{% endif %};
+    const swipeTarget = document.querySelector('.work_page');
+
+    const navigateWithSwipeAnimation = (url, direction) => {
+      if (!url) return;
+      if (!swipeTarget || typeof gsap === 'undefined') {
+        window.location.href = url;
+        return;
+      }
+
+      gsap.to(swipeTarget, {
+        x: direction === 'next' ? -120 : 120,
+        duration: 0.18,
+        ease: 'power1.in',
+        onComplete: () => { window.location.href = url; }
+      });
+    };
+
+    // Move floating arrows to <body> so they are not clipped by smooth-scroll wrappers.
+    document.querySelectorAll('.work-nav-arrow').forEach((arrow) => {
+      document.body.appendChild(arrow);
+    });
+
+    const prevArrow = document.querySelector('.work-nav-prev');
+    const nextArrow = document.querySelector('.work-nav-next');
+    if (prevArrow) {
+      prevArrow.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateWithSwipeAnimation(prevUrl, 'prev');
+      });
+    }
+    if (nextArrow) {
+      nextArrow.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateWithSwipeAnimation(nextUrl, 'next');
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) {
+        return;
+      }
+
+      const activeTag = document.activeElement && document.activeElement.tagName;
+      if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') {
+        return;
+      }
+
+      if (e.key === 'ArrowLeft' && prevUrl) {
+        navigateWithSwipeAnimation(prevUrl, 'prev');
+      } else if (e.key === 'ArrowRight' && nextUrl) {
+        navigateWithSwipeAnimation(nextUrl, 'next');
+      }
+    });
+
+    // Swipe navigation on work detail pages (horizontal only).
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let swipeTracking = false;
+    let horizontalIntent = false;
+    let lastDx = 0;
+
+    const resetSwipeTarget = () => {
+      if (!swipeTarget) return;
+      if (typeof gsap !== 'undefined') {
+        gsap.to(swipeTarget, {
+          x: 0,
+          duration: 0.2,
+          ease: 'power2.out',
+          clearProps: 'transform'
+        });
+      } else {
+        swipeTarget.style.transform = '';
+      }
+    };
+
+    document.addEventListener('touchstart', function(e) {
+      if (!e.touches || e.touches.length !== 1) return;
+      const blockedTarget = e.target.closest('video, iframe, a, button, input, textarea, select');
+      if (blockedTarget) return;
+      swipeTracking = true;
+      horizontalIntent = false;
+      lastDx = 0;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+      if (!swipeTracking || !e.touches || e.touches.length !== 1 || !swipeTarget) return;
+      const dx = e.touches[0].clientX - touchStartX;
+      const dy = e.touches[0].clientY - touchStartY;
+
+      // Detect horizontal intent without affecting vertical scroll unless confirmed.
+      if (!horizontalIntent) {
+        if (Math.abs(dx) > 14 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          horizontalIntent = true;
+        } else {
+          return;
+        }
+      }
+
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      lastDx = dx;
+      const visualDx = Math.max(-48, Math.min(48, dx * 0.28));
+      if (typeof gsap !== 'undefined') {
+        gsap.set(swipeTarget, { x: visualDx });
+      } else {
+        swipeTarget.style.transform = `translate3d(${visualDx}px, 0, 0)`;
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', function(e) {
+      if (!swipeTracking || !e.changedTouches || e.changedTouches.length !== 1) return;
+      const dx = horizontalIntent ? lastDx : (e.changedTouches[0].clientX - touchStartX);
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      const dt = Date.now() - touchStartTime;
+      swipeTracking = false;
+
+      // Horizontal swipe with low vertical deviation, quick enough to avoid scroll conflicts.
+      const isHorizontalSwipe = Math.abs(dx) > 70 && Math.abs(dy) < 35 && dt < 450;
+      if (!isHorizontalSwipe) {
+        resetSwipeTarget();
+        return;
+      }
+
+      if (dx > 0 && prevUrl) {
+        navigateWithSwipeAnimation(prevUrl, 'prev');
+      } else if (dx < 0 && nextUrl) {
+        navigateWithSwipeAnimation(nextUrl, 'next');
+      } else {
+        resetSwipeTarget();
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', function() {
+      swipeTracking = false;
+      horizontalIntent = false;
+      resetSwipeTarget();
+    }, { passive: true });
+  })();
 </script>

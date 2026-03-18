@@ -26,6 +26,7 @@ class Playground3DScene {
     this.targetRotation = { x: 0, y: 0 };
     this.isInitialized = false;
     this.isHovering = false;
+    this.touchScrollLockContextId = `sketchbook-3d-${Math.random().toString(36).slice(2, 10)}`;
 
     this.init();
   }
@@ -262,9 +263,19 @@ class Playground3DScene {
     this.container.addEventListener('mouseleave', () => this.onMouseLeave());
 
     // Touch movement
-    this.container.addEventListener('touchmove', (e) => this.onTouchMove(e), false);
-    this.container.addEventListener('touchstart', () => this.onMouseEnter());
-    this.container.addEventListener('touchend', () => this.onMouseLeave());
+    this.container.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
+    this.container.addEventListener('touchstart', () => {
+      this.onMouseEnter();
+      this.lockTouchScroll();
+    }, { passive: true });
+    this.container.addEventListener('touchend', () => {
+      this.onMouseLeave();
+      this.unlockTouchScroll();
+    }, { passive: true });
+    this.container.addEventListener('touchcancel', () => {
+      this.onMouseLeave();
+      this.unlockTouchScroll();
+    }, { passive: true });
   }
 
   onMouseMove(event) {
@@ -282,6 +293,9 @@ class Playground3DScene {
   }
 
   onTouchMove(event) {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     if (event.touches.length > 0) {
       const touch = event.touches[0];
       const rect = this.container.getBoundingClientRect();
@@ -305,6 +319,18 @@ class Playground3DScene {
     // Smoothly return to default rotation
     this.targetRotation.x = 0;
     this.targetRotation.y = 0;
+  }
+
+  lockTouchScroll() {
+    if (window.TouchScrollLock && typeof window.TouchScrollLock.lock === 'function') {
+      window.TouchScrollLock.lock(this.touchScrollLockContextId);
+    }
+  }
+
+  unlockTouchScroll() {
+    if (window.TouchScrollLock && typeof window.TouchScrollLock.unlock === 'function') {
+      window.TouchScrollLock.unlock(this.touchScrollLockContextId);
+    }
   }
 
   onWindowResize() {

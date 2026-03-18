@@ -1,22 +1,12 @@
 {% assign works = site.works | sort: "year" | reverse %}
 
-<div class="container-fluid header_margin footer_padding">
+<div class="container-fluid header_margin footer_padding works-masonry">
     {% for work in works %}
-
-    {% assign remainder = forloop.index | modulo: 2 %}
-    {% if remainder != 0 %}
-        <div class="row">
-    {% endif %}
-        <div class="col-md-6 work_grid">
+        <div class="work_grid">
             <a href="{{work.url}}">
-            <img class="img-fluid" src={{ work.thumb }}>
+            <img class="img-fluid" src={{ work.thumb }} alt="{{ work.title }}">
             <h1>{{work.title}}</h1>
             </a>
         </div>
-
-    {% if remainder == 0 %}
-        </div>
-    {% endif %}
-
     {% endfor %}
 </div>
