@@ -32,6 +32,24 @@ function parseCssColorToRgb(input) {
     }
   }
 
+  // hsl()/hsla() and named colors via browser parsing
+  if (typeof document !== 'undefined' && document.body) {
+    const probe = document.createElement('span');
+    probe.style.color = color;
+    probe.style.display = 'none';
+    document.body.appendChild(probe);
+    const computed = getComputedStyle(probe).color;
+    document.body.removeChild(probe);
+    const match = computed.match(/\d+(\.\d+)?/g);
+    if (match && match.length >= 3) {
+      return {
+        r: Number(match[0]),
+        g: Number(match[1]),
+        b: Number(match[2])
+      };
+    }
+  }
+
   // Fallback to current text color-like black
   return { r: 1, g: 0, b: 2 };
 }
@@ -86,18 +104,15 @@ function initWelcomeTextLetterAnimation() {
   const DESKTOP_RADIUS_MULTIPLIER = 1.45;
   const MOBILE_RADIUS_MULTIPLIER = 0.85;
 
-  const computedRoot = getComputedStyle(document.documentElement);
-  const accentColor = parseCssColorToRgb(computedRoot.getPropertyValue('--accent-color'));
-  const normalColor = parseCssColorToRgb(computedRoot.getPropertyValue('--text-color'));
-
   const splitTxt = new SplitText(welcomeText, { type: 'chars' });
   splitTxt.chars.forEach((char) => {
-    char.style.transition = 'color 0.08s linear';
+    char.style.transition = 'color 0.08s linear, -webkit-text-stroke-color 0.08s linear, -webkit-text-stroke-width 0.08s linear';
   });
 
   let pointerX = -9999;
   let pointerY = -9999;
   let isPointerActive = false;
+  let isMousePointer = false;
 
   function getStickerSources() {
     const stickerEls = document.querySelectorAll('.welcome-section .sticker-wrapper[data-influence-color]');
@@ -109,6 +124,7 @@ function initWelcomeTextLetterAnimation() {
   }
 
   function updateCharacterColors() {
+    const normalColor = parseCssColorToRgb(getComputedStyle(welcomeText).color);
     const stickerSources = getStickerSources();
 
     splitTxt.chars.forEach((char) => {
@@ -116,15 +132,13 @@ function initWelcomeTextLetterAnimation() {
       const charCenterX = rect.left + rect.width / 2;
       const charCenterY = rect.top + rect.height / 2;
       const influences = [];
+      let mouseWeight = 0;
 
       if (isPointerActive) {
         const dx = pointerX - charCenterX;
         const dy = pointerY - charCenterY;
         const d = Math.sqrt(dx * dx + dy * dy);
-        const w = influenceFalloff(d, MOUSE_RADIUS);
-        if (w > 0) {
-          influences.push({ color: accentColor, weight: w });
-        }
+        mouseWeight = influenceFalloff(d, MOUSE_RADIUS);
       }
 
       stickerSources.forEach((source) => {
@@ -144,10 +158,23 @@ function initWelcomeTextLetterAnimation() {
 
       const blended = blendInfluencedColor(normalColor, influences, MIN_INFLUENCE_WEIGHT);
       const nextColor = rgbToCss(blended);
+      const baseColor = rgbToCss(normalColor);
+      const shouldOutlineFromMouse = isMousePointer && mouseWeight >= MIN_INFLUENCE_WEIGHT;
 
-      if (char.dataset.currentInfluenceColor !== nextColor) {
+      if (shouldOutlineFromMouse) {
+        if (char.dataset.currentInfluenceMode !== 'outline' || char.dataset.currentInfluenceColor !== baseColor) {
+          char.dataset.currentInfluenceMode = 'outline';
+          char.dataset.currentInfluenceColor = baseColor;
+          char.style.color = 'transparent';
+          char.style.webkitTextStrokeWidth = '1px';
+          char.style.webkitTextStrokeColor = baseColor;
+        }
+      } else if (char.dataset.currentInfluenceColor !== nextColor || char.dataset.currentInfluenceMode !== 'fill') {
+        char.dataset.currentInfluenceMode = 'fill';
         char.dataset.currentInfluenceColor = nextColor;
         char.style.color = nextColor;
+        char.style.webkitTextStrokeWidth = '0px';
+        char.style.webkitTextStrokeColor = 'transparent';
       }
     });
 
@@ -158,10 +185,12 @@ function initWelcomeTextLetterAnimation() {
     pointerX = e.clientX;
     pointerY = e.clientY;
     isPointerActive = true;
+    isMousePointer = true;
   });
 
   document.addEventListener('mouseleave', () => {
     isPointerActive = false;
+    isMousePointer = false;
   });
 
   document.addEventListener('touchstart', (e) => {
@@ -169,6 +198,7 @@ function initWelcomeTextLetterAnimation() {
     pointerX = e.touches[0].clientX;
     pointerY = e.touches[0].clientY;
     isPointerActive = true;
+    isMousePointer = false;
   }, { passive: true });
 
   document.addEventListener('touchmove', (e) => {
@@ -176,10 +206,12 @@ function initWelcomeTextLetterAnimation() {
     pointerX = e.touches[0].clientX;
     pointerY = e.touches[0].clientY;
     isPointerActive = true;
+    isMousePointer = false;
   }, { passive: true });
 
   document.addEventListener('touchend', () => {
     isPointerActive = false;
+    isMousePointer = false;
   }, { passive: true });
 
   requestAnimationFrame(updateCharacterColors);

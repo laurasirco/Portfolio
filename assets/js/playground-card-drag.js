@@ -216,6 +216,7 @@
         if (!exceeded) return;
         this.dragStarted = true;
         this.isDragging = true;
+        this.card.dispatchEvent(new CustomEvent('sketchbook:carddragstart', { bubbles: true }));
         if (this.isTouchDragging && window.TouchScrollLock && typeof window.TouchScrollLock.lock === 'function') {
           window.TouchScrollLock.lock(this.scrollLockContextId);
         }
@@ -283,6 +284,8 @@
         });
       }
 
+      const releaseVelocity = { x: this.velocity.x, y: this.velocity.y };
+
       if (this.dragStarted) {
         this.clickSuppressUntil = Date.now() + CLICK_SUPPRESS_MS;
       }
@@ -305,6 +308,13 @@
           duration: INERTIA_DURATION,
           ease: 'power2.out'
         });
+      }
+
+      if (this.dragStarted) {
+        this.card.dispatchEvent(new CustomEvent('sketchbook:carddragend', {
+          bubbles: true,
+          detail: { velocity: releaseVelocity }
+        }));
       }
 
       this.isDragging = false;

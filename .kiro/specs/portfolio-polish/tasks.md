@@ -487,53 +487,53 @@ Este plan implementa mejoras y refinamientos para el portfolio, modernizando la 
     - Validar entrada/salida de radio y transición de color
     - _Requisitos: 19.1, 19.4_
 
-- [ ] 22. Sketchbook cards draggables con baja influencia
-  - [ ] 22.1 Añadir drag manual ligero sobre cards
+- [x] 22. Sketchbook cards draggables con baja influencia
+  - [x] 22.1 Añadir drag manual ligero sobre cards
     - Menor desplazamiento y mayor retorno que stickers
     - _Requisitos: 26.1, 26.3, 26.4_
 
-  - [ ] 22.2 Mantener integración con físicas entre cards
+  - [x] 22.2 Mantener integración con físicas entre cards
     - No romper interacciones Matter.js existentes
     - _Requisitos: 26.2_
 
   - [ ]* 22.3 Escribir tests de convivencia drag+física
     - _Requisitos: 26.1, 26.2, 26.3_
 
-- [ ] 23. Three.js avanzado para Sketchbook 3D
-  - [ ] 23.1 Soportar frontmatter de material/sombras
+- [x] 23. Three.js avanzado para Sketchbook 3D
+  - [x] 23.1 Soportar frontmatter de material/sombras
     - `material_type`, `material_color`, `wireframe`, `cast_shadows`
     - _Requisitos: 27.1, 27.3_
 
-  - [ ] 23.2 Implementar modo `matcap` con textura en assets
+  - [x] 23.2 Implementar modo `matcap` con textura en assets
     - Cargar textura matcap y aplicarla según frontmatter
     - _Requisitos: 27.2_
 
-  - [ ] 23.3 Centralizar configuración de luces editable
+  - [x] 23.3 Centralizar configuración de luces editable
     - Ambient + key/fill/rim con posición/intensidad/color
     - _Requisitos: 28.1, 28.2, 28.3, 28.4_
 
-  - [ ] 23.4 Mejorar calidad de sombras (antialiasing)
+  - [x] 23.4 Mejorar calidad de sombras (antialiasing)
     - Ajustar mapSize/bias/normalBias y filtros
     - Definir presets mobile/desktop
     - _Requisitos: 29.1, 29.2, 29.3_
 
-  - [ ]* 23.5 Escribir tests de frontmatter 3D y render settings
+  - [x]* 23.5 Escribir tests de frontmatter 3D y render settings
     - _Requisitos: 27.1, 27.2, 28.1, 29.1_
 
-- [ ] 24. Sistema de efectos de sonido para interacciones (futuro)
-  - [ ] 24.1 Crear módulo `interaction-sfx.js` con configuración centralizada
+- [x] 24. Sistema de efectos de sonido para interacciones (futuro)
+  - [x] 24.1 Crear módulo `interaction-sfx.js` con configuración centralizada
     - API: init/play/setEnabled/setVolume
     - _Requisitos: 30.1, 30.2, 30.5_
 
-  - [ ] 24.2 Integrar SFX en stickers, cards y popovers
+  - [x] 24.2 Integrar SFX en stickers, cards y popovers
     - Hover/pick/drop/open/close según evento
     - _Requisitos: 30.1_
 
-  - [ ] 24.3 Añadir preload/cache y fallback silencioso
+  - [x] 24.3 Añadir preload/cache y fallback silencioso
     - Sin bloqueo si autoplay/audio falla
     - _Requisitos: 30.3, 30.5_
 
-  - [ ]* 24.4 Añadir control global de mute/volumen
+  - [x]* 24.4 Añadir control global de mute/volumen
     - Preferencias persistentes y accesibilidad
     - _Requisitos: 30.4_
 

@@ -14,18 +14,26 @@ permalink: /sketchbook/
 
 <div class="sketchbook-groups header_margin footer_padding">
     {% for day_group in day_groups %}
+    {% assign day_id = day_group.items[0].date | date: "%y%m%d" %}
     <section class="sketchbook-day-section">
         <h3 class="sketchbook-day-heading">{{ day_group.items[0].date | date: "%-d/%-m/%Y" }}</h3>
 
         <div class="playground-grid sketchbook-day-grid">
             {% for item in day_group.items %}
             {% assign card_index = card_index | plus: 1 %}
+            {% assign day_seq = forloop.index %}
+            {% if day_seq < 10 %}
+            {% assign day_seq_label = "0" | append: day_seq %}
+            {% else %}
+            {% assign day_seq_label = day_seq %}
+            {% endif %}
+            {% assign entry_id = "SB" | append: day_id | append: "" | append: day_seq_label %}
             {% assign size = item.size | default: "1x1" %}
             {% assign size_parts = size | split: "x" %}
             {% assign grid_col = size_parts[0] | plus: 0 %}
             {% assign grid_row = size_parts[1] | plus: 0 %}
 
-            <div class="playground-card" style="--index: {{card_index}}; --random-rotate: {{card_index | times: 7.5 | modulo: 30 | minus: 15}}deg; --random-offset-x: {{card_index | times: 73 | modulo: 60 | minus: 30}}px; --random-offset-y: {{card_index | times: 89 | modulo: 60 | minus: 30}}px; --grid-col: {{grid_col}}; --grid-row: {{grid_row}}; --text-color: {{item.text_color | default: '#010002'}}; --font-family: {{item.font_family | default: 'var(--font-sans-serif)' | escape }}; --bg-color: {{item.bg_color | default: 'transparent'}};" data-discipline="{{item.discipline}}" data-size="{{size}}" data-grid-col="{{grid_col}}" data-grid-row="{{grid_row}}" data-title="{{item.title}}" data-caption="{{item.caption}}" data-media-type="{{item.media_type}}" data-date="{{item.date | date: '%B %d, %Y'}}" data-text-color="{{item.text_color | default: '#010002'}}" data-font-family="{{item.font_family | default: 'var(--font-sans-serif)' | escape }}" data-bg-color="{{item.bg_color | default: 'transparent'}}">
+            <div class="playground-card" style="--index: {{card_index}}; --random-rotate: {{card_index | times: 7.5 | modulo: 30 | minus: 15}}deg; --random-offset-x: {{card_index | times: 73 | modulo: 60 | minus: 30}}px; --random-offset-y: {{card_index | times: 89 | modulo: 60 | minus: 30}}px; --grid-col: {{grid_col}}; --grid-row: {{grid_row}}; --text-color: {{item.text_color | default: '#010002'}}; --font-family: {{item.font_family | default: 'var(--font-sans-serif)' | escape }}; --bg-color: {{item.bg_color | default: 'transparent'}};" data-discipline="{{item.discipline}}" data-size="{{size}}" data-grid-col="{{grid_col}}" data-grid-row="{{grid_row}}" data-title="{{item.title}}" data-caption="{{item.caption}}" data-media-type="{{item.media_type}}" data-date="{{item.date | date: '%B %d, %Y'}}" data-entry-id="{{ entry_id }}" data-text-color="{{item.text_color | default: '#010002'}}" data-font-family="{{item.font_family | default: 'var(--font-sans-serif)' | escape }}" data-bg-color="{{item.bg_color | default: 'transparent'}}" data-material-type="{{ item.material_type | default: '' }}" data-material-color="{{ item.material_color | default: '' }}" data-wireframe="{{ item.wireframe }}" data-cast-shadows="{{ item.cast_shadows }}" data-shadow-quality="{{ item.shadow_quality | default: '' }}" data-matcap-texture="{{ item.matcap_texture | default: '' }}">
                 {% if item.media_type == "video" %}
                 <video class="playground-thumb" autoplay loop muted playsinline webkit-playsinline>
                     <source src="{{item.media}}#t=0.001" type="video/mp4">
@@ -33,12 +41,13 @@ permalink: /sketchbook/
                 {% elsif item.media_type == "image" or item.media_type == "gif" %}
                 <img class="playground-thumb" src="{{item.media}}" alt="{{item.title}}">
                 {% elsif item.media_type == "three_d" %}
-                <div class="playground-3d-thumb" data-3d-url="{{item.media}}"></div>
+                <div class="playground-3d-thumb" data-3d-url="{{item.media}}" data-material-type="{{ item.material_type | default: '' }}" data-material-color="{{ item.material_color | default: '' }}" data-wireframe="{{ item.wireframe }}" data-cast-shadows="{{ item.cast_shadows }}" data-shadow-quality="{{ item.shadow_quality | default: '' }}" data-matcap-texture="{{ item.matcap_texture | default: '' }}"></div>
                 {% elsif item.media_type == "text" %}
                 <div class="playground-text-box">
                     {{item.content}}
                 </div>
                 {% endif %}
+                <span class="sketchbook-entry-id" aria-hidden="true">{{ entry_id }}</span>
             </div>
             {% endfor %}
         </div>

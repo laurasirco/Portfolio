@@ -61,8 +61,8 @@
   fontWeight: "var(--font-weight-sans-default)"
   fontFamily: "var(--font-sans-serif)"
   position:
-    bottom: 40%
-    left: 5%
+    top: 15%
+    left: 20%
   rotation: -6deg
   scale: 1
   draggable: true
@@ -95,7 +95,7 @@
   fontWeight: "var(--font-weight-sans-default)"
   fontFamily: "var(--font-sans-serif)"
   position:
-    bottom: 48%
+    bottom: 20%
     left: 26%
   rotation: -5deg
   scale: 1

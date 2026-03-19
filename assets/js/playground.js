@@ -6,6 +6,7 @@ let overlayElement = null;
 let allCards = [];
 let popoverJustOpened = false;
 let popoverPositionListeners = null;
+let textCardFitRaf = null;
 
 /**
  * Center popover using absolute positioning based on window center
@@ -342,6 +343,16 @@ function initializePlayground() {
       }
     });
   });
+
+  fitSketchbookTextCards();
+  applySketchbookEntryIdColors();
+  window.addEventListener('resize', scheduleFitSketchbookTextCards);
+  window.addEventListener('orientationchange', scheduleFitSketchbookTextCards);
+  window.addEventListener('load', scheduleFitSketchbookTextCards);
+  window.addEventListener('pageshow', scheduleFitSketchbookTextCards);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(scheduleFitSketchbookTextCards).catch(() => {});
+  }
   
   // Handle keyboard navigation for Escape key globally
   document.addEventListener('keydown', function(e) {
@@ -350,6 +361,123 @@ function initializePlayground() {
         closePopover();
       }
     }
+  });
+}
+
+function scheduleFitSketchbookTextCards() {
+  if (textCardFitRaf) {
+    cancelAnimationFrame(textCardFitRaf);
+  }
+  textCardFitRaf = requestAnimationFrame(() => {
+    fitSketchbookTextCards();
+    applySketchbookEntryIdColors();
+    textCardFitRaf = null;
+  });
+}
+
+function parseCssColorToRgb(value) {
+  if (!value) return null;
+  const raw = value.trim();
+
+  const hexMatch = raw.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hexMatch) {
+    const hex = hexMatch[1];
+    if (hex.length === 3) {
+      return {
+        r: parseInt(hex[0] + hex[0], 16),
+        g: parseInt(hex[1] + hex[1], 16),
+        b: parseInt(hex[2] + hex[2], 16)
+      };
+    }
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16)
+    };
+  }
+
+  const rgbMatch = raw.match(/^rgba?\(([^)]+)\)$/i);
+  if (rgbMatch) {
+    const parts = rgbMatch[1].split(',').map((p) => p.trim());
+    if (parts.length < 3) return null;
+    const r = Number.parseFloat(parts[0]);
+    const g = Number.parseFloat(parts[1]);
+    const b = Number.parseFloat(parts[2]);
+    if ([r, g, b].some((v) => Number.isNaN(v))) return null;
+    return { r, g, b };
+  }
+
+  return null;
+}
+
+function colorLuminance({ r, g, b }) {
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+function clampChannel(value) {
+  return Math.max(0, Math.min(255, Math.round(value)));
+}
+
+function deriveEntryIdColorFromBg(bgRgb) {
+  const lum = colorLuminance(bgRgb);
+  const delta = lum > 0.58 ? -56 : 56;
+  return {
+    r: clampChannel(bgRgb.r + delta),
+    g: clampChannel(bgRgb.g + delta),
+    b: clampChannel(bgRgb.b + delta)
+  };
+}
+
+function applySketchbookEntryIdColors() {
+  const cards = document.querySelectorAll('.playground-card');
+  if (!cards.length) return;
+
+  const rootStyles = getComputedStyle(document.documentElement);
+  const fallbackBg = rootStyles.getPropertyValue('--bg-color').trim() || '#ffffff';
+  const fallbackRgb = parseCssColorToRgb(fallbackBg) || { r: 255, g: 255, b: 255 };
+
+  cards.forEach((card) => {
+    const bg = (card.getAttribute('data-bg-color') || '').trim();
+    const bgRgb = (bg && bg !== 'transparent') ? (parseCssColorToRgb(bg) || fallbackRgb) : fallbackRgb;
+    const idColor = deriveEntryIdColorFromBg(bgRgb);
+    card.style.setProperty('--entry-id-color', `rgb(${idColor.r}, ${idColor.g}, ${idColor.b})`);
+  });
+}
+
+function fitSketchbookTextCards() {
+  const textBoxes = document.querySelectorAll('.playground-card[data-media-type="text"] .playground-text-box');
+  if (!textBoxes.length) return;
+
+  textBoxes.forEach((box) => {
+    const MIN = 4;
+    const MAX = Math.max(8, Math.min(16, Math.floor(box.clientHeight * 0.2)));
+
+    // Reset to max before measuring.
+    box.style.fontSize = `${MAX}px`;
+    box.style.lineHeight = '1.2';
+
+    if (box.scrollHeight <= box.clientHeight && box.scrollWidth <= box.clientWidth) {
+      return;
+    }
+
+    let lo = MIN;
+    let hi = MAX;
+    let best = MIN;
+
+    // Binary search for largest fitting size.
+    for (let i = 0; i < 8; i += 1) {
+      const mid = (lo + hi) / 2;
+      box.style.fontSize = `${mid}px`;
+      const fits = box.scrollHeight <= box.clientHeight && box.scrollWidth <= box.clientWidth;
+      if (fits) {
+        best = mid;
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+
+    box.style.fontSize = `${best.toFixed(2)}px`;
   });
 }
 
@@ -391,6 +519,7 @@ function openPopover(cardIndex) {
 
   // Show popover
   popoverElement.style.display = 'flex';
+  document.dispatchEvent(new CustomEvent('sketchbook:popoveropen', { detail: { cardIndex } }));
 
   // Show overlay with fade-in
   overlayElement.classList.add('active');
@@ -452,6 +581,7 @@ function closePopover() {
   if (currentPopoverIndex === -1) {
     return;
   }
+  document.dispatchEvent(new CustomEvent('sketchbook:popoverclose', { detail: { cardIndex: currentPopoverIndex } }));
   
   detachPopoverPositionListeners();
   
@@ -522,6 +652,7 @@ function navigateToCard(cardIndex) {
   
   // Determine navigation direction
   const direction = cardIndex > currentPopoverIndex ? 'next' : 'prev';
+  document.dispatchEvent(new CustomEvent('sketchbook:popovernavigate', { detail: { cardIndex, direction } }));
   
   currentPopoverIndex = cardIndex;
   const card = allCards[cardIndex];
@@ -559,6 +690,9 @@ function navigateToCard(cardIndex) {
     // Apply text color to content and all child elements
     newContent.style.setProperty('color', textColor, 'important');
     newContent.querySelectorAll('h3, p, div, span, a, *').forEach(el => {
+      if (el.classList && el.classList.contains('popover-entry-id')) {
+        return;
+      }
       el.style.setProperty('color', textColor, 'important');
     });
     
@@ -577,6 +711,9 @@ function navigateToCard(cardIndex) {
     // Apply text color to content and all child elements
     newContent.style.setProperty('color', textColor, 'important');
     newContent.querySelectorAll('h3, p, div, span, a, *').forEach(el => {
+      if (el.classList && el.classList.contains('popover-entry-id')) {
+        return;
+      }
       el.style.setProperty('color', textColor, 'important');
     });
     
@@ -651,6 +788,7 @@ function navigateToCard(cardIndex) {
 function createPopoverContent(card, title, caption, mediaType, textColor, fontFamily, bgColor) {
   const newContent = document.createElement('div');
   newContent.className = 'popover-content-inner';
+  const entryId = (card.getAttribute('data-entry-id') || '').trim();
   
   // Add media based on type
   const mediaElement = card.querySelector('.playground-thumb, .playground-text-box, .playground-3d-thumb');
@@ -752,6 +890,12 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       container.className = 'popover-3d-container';
       const modelUrl = mediaElement.getAttribute('data-3d-url');
       container.setAttribute('data-3d-url', modelUrl);
+      container.dataset.materialType = card.getAttribute('data-material-type') || '';
+      container.dataset.materialColor = card.getAttribute('data-material-color') || '';
+      container.dataset.wireframe = card.getAttribute('data-wireframe') || '';
+      container.dataset.castShadows = card.getAttribute('data-cast-shadows') || '';
+      container.dataset.shadowQuality = card.getAttribute('data-shadow-quality') || '';
+      container.dataset.matcapTexture = card.getAttribute('data-matcap-texture') || '';
       
       // Apply background color to 3D container
       container.style.setProperty('background-color', bgColor, 'important');
@@ -768,7 +912,14 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       // Use requestAnimationFrame to ensure container is rendered and has dimensions
       const initializeScene = () => {
         if (typeof Playground3DScene !== 'undefined' && container.offsetWidth > 0 && container.offsetHeight > 0) {
-          new Playground3DScene(container, modelUrl);
+          new Playground3DScene(container, modelUrl, {
+            materialType: container.dataset.materialType,
+            materialColor: container.dataset.materialColor,
+            wireframe: container.dataset.wireframe,
+            castShadows: container.dataset.castShadows,
+            shadowQuality: container.dataset.shadowQuality,
+            matcapTexture: container.dataset.matcapTexture
+          });
         } else if (typeof Playground3DScene !== 'undefined') {
           // Retry with setTimeout if dimensions not available
           setTimeout(initializeScene, 50);
@@ -788,6 +939,14 @@ function createPopoverContent(card, title, caption, mediaType, textColor, fontFa
       newContent.appendChild(textBox);
       
     }
+  }
+
+  if (entryId) {
+    const idEl = document.createElement('span');
+    idEl.className = 'popover-entry-id';
+    idEl.textContent = entryId;
+    idEl.setAttribute('aria-hidden', 'true');
+    newContent.appendChild(idEl);
   }
   
   // Apply background color to the entire content

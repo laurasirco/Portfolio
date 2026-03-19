@@ -8,14 +8,45 @@
 </div>
 
 <header>
-    <a href="/">
-        <div id="logo"></div>
-        <!-- <img class="logo" id="logo" src="/assets/img/logo_white.png" alt="Laura Sirvent"> -->
-    </a>
-    <nav>
-        <a href="/" {% if page.url == "/" %}class="active"{% endif %}>Home</a>
-        <a href="/work" {% if page.url == "/work/" or page.url contains "/work/" %}class="active"{% endif %}>Work</a>
-        <a href="/sketchbook" {% if page.url == "/sketchbook/" or page.url contains "/sketchbook/" %}class="active"{% endif %}>Sketchbook</a>
-        <a href="/about" {% if page.url == "/about/" or page.url contains "/about/" %}class="active"{% endif %}>About</a>
-    </nav>
+    <div class="header-left">
+        <button id="header-menu-toggle" class="header-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="header-nav">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav id="header-nav" class="header-nav">
+            <a href="/" {% if page.url == "/" %}class="active"{% endif %}>Home</a>
+            <a href="/work" {% if page.url == "/work/" or page.url contains "/work/" %}class="active"{% endif %}>Work</a>
+            <a href="/sketchbook" {% if page.url == "/sketchbook/" or page.url contains "/sketchbook/" %}class="active"{% endif %}>Sketchbook</a>
+            <a href="/about" {% if page.url == "/about/" or page.url contains "/about/" %}class="active"{% endif %}>About</a>
+        </nav>
+    </div>
+
+    <div class="header-center">
+        <a href="/" aria-label="Home">
+            <div id="logo"></div>
+        </a>
+    </div>
+
+    <div class="header-right">
+        <time id="header-local-time" class="header-local-time" datetime="" aria-live="polite">--:-- CET</time>
+        <button id="header-audio-toggle" class="header-audio-toggle" type="button" aria-label="Toggle audio mute" aria-pressed="true">
+            <svg class="audio-icon audio-icon-muted" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10h4l5-4v12l-5-4H3z"></path>
+                <path d="M16 9l5 6" class="audio-icon-stroke"></path>
+                <path d="M21 9l-5 6" class="audio-icon-stroke"></path>
+            </svg>
+            <svg class="audio-icon audio-icon-unmuted" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10h4l5-4v12l-5-4H3z"></path>
+                <path d="M15 9c1 .8 1.6 1.9 1.6 3s-.6 2.2-1.6 3" class="audio-icon-stroke"></path>
+                <path d="M17.4 7.4A6.8 6.8 0 0 1 20 12c0 1.8-.9 3.5-2.6 4.6" class="audio-icon-stroke"></path>
+            </svg>
+        </button>
+        <div class="toggle-switch">
+            <label class="switch-label" for="theme-toggle-checkbox" aria-label="Toggle day/night mode">
+                <input id="theme-toggle-checkbox" type="checkbox" class="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
 </header>
