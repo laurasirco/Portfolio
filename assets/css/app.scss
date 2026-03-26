@@ -2604,26 +2604,70 @@ video.playground-thumb {
 // Welcome Section Styles
 .welcome-section {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: calc(100dvh - 180px);
   position: relative;
-  padding: 40px 40px 60px;
+  padding: 20px 40px 80px;
 
   @media (max-width: 768px) {
     min-height: calc(100dvh - 150px);
-    padding: 32px 24px 50px;
+    padding: 18px 24px 64px;
   }
 
   @media (max-width: 480px) {
     min-height: calc(100dvh - 135px);
-    padding: 24px 16px 45px;
+    padding: 14px 16px 54px;
   }
 
   @media (max-width: 360px) {
     min-height: calc(100dvh - 120px);
-    padding: 20px 12px 40px;
+    padding: 12px 12px 48px;
   }
+}
+
+.welcome-hero-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px clamp(24px, 4vw, 64px) 40px;
+
+  @media (max-width: 768px) {
+    padding: 20px 20px 36px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px 28px;
+  }
+}
+
+.welcome-hero-3d-canvas {
+  width: min(100%, 1500px);
+  height: min(100%, 980px);
+  min-height: 420px;
+  max-height: calc(100dvh - 140px);
+  opacity: 1;
+
+  @media (max-width: 768px) {
+    min-height: 360px;
+    max-height: calc(100dvh - 120px);
+  }
+
+  @media (max-width: 480px) {
+    min-height: 300px;
+    max-height: calc(100dvh - 108px);
+  }
+}
+
+.welcome-hero-3d-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent;
 }
 
 body.native-scroll .welcome-section {
@@ -2649,8 +2693,6 @@ body.native-scroll .welcome-section {
 }
 
 .welcome-text {
-    line-height: 50%;
-
   font-size: clamp(32px, 8vw, 60px);
   letter-spacing: -2px;
   text-align: center;
@@ -2662,6 +2704,16 @@ body.native-scroll .welcome-section {
   color: var(--text-color);
   z-index: 2;
   position: relative;
+  margin-top: clamp(12px, 4vh, 56px);
+  transform: none;
+
+  @media (max-width: 768px) {
+    margin-top: clamp(8px, 3vh, 32px);
+  }
+
+  @media (max-width: 480px) {
+    margin-top: clamp(4px, 2vh, 18px);
+  }
 }
 
 // Sticker Styles
@@ -2674,7 +2726,7 @@ body.native-scroll .welcome-section {
   position: absolute;
   display: inline-block;
   pointer-events: auto;
-  z-index: 3;
+  z-index: 4;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;

@@ -4,6 +4,13 @@ title: Laura Sirvent
 ---
 
 <section class="welcome-section">
+  <div class="welcome-hero-3d" aria-hidden="true">
+    <div
+      id="welcome-hero-3d-canvas"
+      class="welcome-hero-3d-canvas"
+      data-model-url="/assets/models/me.glb"
+    ></div>
+  </div>
   <h1 class="welcome-text parallax-element">I'm Laura Sirvent, a director working at the intersection of technology, culture and character storytelling. I build playful worlds where code, design and observation turn everyday life into expressive narratives.</h1>
   
   <!-- Stickers -->
@@ -19,3 +26,12 @@ title: Laura Sirvent
 
 <script src="/assets/js/matter.min.js"></script>
 <script src="/assets/js/letters.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.183.2/build/three.module.min.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.2/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="/assets/js/home-hero-3d.js"></script>
