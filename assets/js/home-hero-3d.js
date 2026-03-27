@@ -25,14 +25,14 @@ const WELCOME_HERO_3D_CONFIG = {
       enabled: true,
       maxRotateX: 0.085,
       maxRotateY: 0.14,
-      smoothing: 0.09
+      smoothing: 0.7
     },
     pupilFollow: {
       enabled: true,
       maxOffsetX: 0.009,
       maxOffsetY: 0.008,
       crossEyeStrength: 0.08,
-      smoothing: 0.16,
+      smoothing: 0.9,
       segmentSizeX: 0,
       segmentSizeY: 0
     },
