@@ -29,12 +29,13 @@ await test('Requirement 4: layout includes bottom-safe scroll space so fixed foo
   assert.match(defaultLayout, /@media \(max-width:\s*480px\)\s*\{\s*#smooth-content\s*\{/);
 });
 
-await test('Requirement 4 and 6: smooth scroll is disabled for about and touch devices', async () => {
+await test('Requirement 4 and 6: smooth scroll is disabled for about, backlog, and touch devices', async () => {
   const scrollAnimations = await fs.readFile(path.join(projectRoot, 'assets/js/scroll-animations.js'), 'utf8');
 
   assert.match(scrollAnimations, /function shouldEnableSmoothScroll\(\)/);
   assert.match(scrollAnimations, /function isTouchDevice\(\)/);
-  assert.match(scrollAnimations, /if \(isAboutPage\(\) \|\| isTouchDevice\(\)\)/);
+  assert.match(scrollAnimations, /function isBacklogPage\(\)/);
+  assert.match(scrollAnimations, /if \(isAboutPage\(\) \|\| isBacklogPage\(\) \|\| isTouchDevice\(\)\)/);
   assert.match(scrollAnimations, /const enableSmooth = shouldEnableSmoothScroll\(\);/);
   assert.match(scrollAnimations, /if \(!enableSmooth \|\| typeof ScrollSmoother === 'undefined'\)/);
 });

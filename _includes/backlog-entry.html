@@ -1,0 +1,39 @@
+<article class="backlog-entry">
+    <div class="backlog-entry-content">
+        <div class="backlog-entry-header">
+            <h2>{{ item.title }}</h2>
+            <time class="backlog-entry-date" datetime="{{ item.date | date_to_xmlschema }}">
+                {{ item.date | date: "%d.%m.%Y" }}
+            </time>
+        </div>
+
+        {% if item.excerpt %}
+            <p>{{ item.excerpt }}</p>
+        {% endif %}
+
+        {{ item.content | markdownify }}
+
+        {% if item.media %}
+            <div class="backlog-entry-media">
+                {% if item.media_type == "video" %}
+                    <video controls playsinline preload="metadata">
+                        <source src="{{ item.media }}#t=0.001" type="video/mp4">
+                    </video>
+                {% elsif item.media_type == "image" or item.media_type == "gif" %}
+                    {% assign media_classes = "backlog-main-media" %}
+                    {% if item.media contains "overthinker_talk.png" or item.media contains "talk_loop_sprites.png" %}
+                        {% assign media_classes = media_classes | append: " backlog-pixel-media" %}
+                    {% endif %}
+                    {% if item.media contains "JPG" or item.media contains "JPEG" or item.media contains "HEIC" %}
+                        {% assign media_classes = media_classes | append: " backlog-phone-media" %}
+                    {% endif %}
+                    <img class="{{ media_classes }}" src="{{ item.media }}" alt="{{ item.title }}">
+                {% elsif item.media_type == "embed" %}
+                    <div class="backlog-entry-embed">
+                        {{ item.media }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</article>

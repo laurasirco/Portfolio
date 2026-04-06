@@ -774,3 +774,22 @@ cast_shadows: true
   - Preload/caching de audios cortos para latencia baja.
   - Fail-safe: si no hay autoplay permission o falla audio, no romper UX.
   - Control global de mute y respeto de preferencias de accesibilidad.
+
+### L. CMS Editorial para Works y Sketchbook
+
+- Integrar un CMS git-based tipo Decap CMS en una ruta administrativa dedicada (`/admin/` o equivalente existente).
+- Mantener el modelo de contenido actual como fuente de verdad:
+  - `works` -> `_works/`
+  - `playground` -> `_playground/`
+- Configurar colecciones editoriales separadas para:
+  - portfolio works
+  - sketchbook entries
+- Exponer en la UI los campos ya usados por Liquid/frontmatter:
+  - comunes: `title`, `date`, `layout`, `bg_color`, `text_color`
+  - works: `year`, `client`, `studio`, `thumb`, `video`, `vimeo`
+  - playground: `discipline`, `media_type`, `media`, `size`
+  - 3D playground: `material_type`, `material_color`, `wireframe`, `cast_shadows`, `shadow_quality`, `matcap_texture`
+- Mantener edición basada en archivos Markdown/HTML compatibles con Jekyll, sin introducir base de datos externa.
+- Añadir preview/editorial validation suficiente para evitar romper el frontmatter esperado por templates.
+- Aprovechar la carpeta/ruta administrativa ya presente en el repo si simplifica la integración, evitando duplicar entrypoints innecesarios.
+- Documentar credenciales, backend de autenticación/publicación y flujo editorial local en un archivo operativo breve cuando se implemente.

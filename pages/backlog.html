@@ -1,0 +1,25 @@
+---
+layout: backlog
+title: Backlog
+permalink: /backlog/
+---
+
+{% assign backlog_entries = site.backlog | default: empty %}
+{% assign backlog_entries = backlog_entries | sort: "date" | reverse %}
+
+<div class="backlog-page header_margin footer_padding">
+    <div class="backlog-list">
+        {% if backlog_entries.size > 0 %}
+            {% for item in backlog_entries %}
+                {% include backlog-entry.html item=item %}
+            {% endfor %}
+        {% else %}
+            <article class="backlog-entry">
+                <div class="backlog-entry-content">
+                    <h2>No entries yet</h2>
+                    <p>The backlog is ready, but there are no entries to show yet.</p>
+                </div>
+            </article>
+        {% endif %}
+    </div>
+</div>

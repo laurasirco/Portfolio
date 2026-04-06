@@ -218,6 +218,7 @@ Este plan implementa mejoras y refinamientos para el portfolio, modernizando la 
 
   - [x]* 8.5 Escribir property test para text sticker properties applied
     - **Property 14: Text Sticker Properties Applied**
+
     - **Valida: Requisitos 11.2**
 
   - [x] 8.6 Soportar HTML content con links en text stickers
@@ -536,6 +537,35 @@ Este plan implementa mejoras y refinamientos para el portfolio, modernizando la 
   - [x]* 24.4 Añadir control global de mute/volumen
     - Preferencias persistentes y accesibilidad
     - _Requisitos: 30.4_
+
+- [ ] 25. Integrar CMS editorial para contenido
+  - [ ] 25.1 Evaluar e integrar Decap CMS sobre la ruta administrativa existente
+    - Revisar carpetas `admin/` y `_admin/` ya presentes en el repositorio
+    - Definir si la integración final usa Decap CMS en `/admin/` sin duplicar shells administrativos
+    - Añadir assets/config base del CMS
+    - _Requisitos: 31.1, 31.4, 31.5_
+
+  - [ ] 25.2 Configurar colección CMS para `_works/`
+    - Definir campos editoriales para works según frontmatter actual
+    - Mantener compatibilidad con `layout: work` y media existente
+    - Asegurar escritura de archivos fuente en `_works/`
+    - _Requisitos: 31.2, 31.3, 31.4, 31.5_
+
+  - [ ] 25.3 Configurar colección CMS para `_playground/`
+    - Definir campos editoriales para entradas de sketchbook
+    - Soportar `media_type` text/image/video/three_d y sus campos asociados
+    - Asegurar escritura de archivos fuente en `_playground/`
+    - _Requisitos: 31.2, 31.3, 31.4, 31.5_
+
+  - [ ] 25.4 Añadir soporte de preview/editorial validation
+    - Validar estructura mínima de frontmatter antes de guardar/publicar
+    - Documentar limitaciones del preview si el render completo depende de Jekyll/Liquid
+    - _Requisitos: 31.3, 31.6_
+
+  - [ ] 25.5 Documentar flujo editorial local y de publicación
+    - Explicar autenticación/backend elegido y flujo de uso diario
+    - Documentar cómo crear, editar y publicar works/sketchbook desde UI
+    - _Requisitos: 31.1, 31.2, 31.6_
 
 ## Notas
 

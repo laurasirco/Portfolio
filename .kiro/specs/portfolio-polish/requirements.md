@@ -400,3 +400,18 @@ Este spec define mejoras y refinamientos para el portfolio, enfocándose en la e
 3. THE implementation SHALL preload/cache audio assets to avoid lag on first interaction
 4. THE system SHALL include a global mute/disable option and respect reduced-motion/accessibility preferences
 5. IF audio fails to load/play, THE UI SHALL continue without blocking interaction
+
+---
+
+### Requirement 31: CMS Editorial para Works y Sketchbook
+
+**User Story:** Como editora del portfolio, quiero gestionar entradas de `works` y `playground` desde una UI tipo CMS, para crear y editar contenido sin depender de edición manual de frontmatter y archivos.
+
+#### Acceptance Criteria
+
+1. THE site SHALL expose an authenticated CMS UI for editorial management
+2. THE CMS SHALL support creating, editing, deleting, and publishing entries for `_works/` and `_playground/`
+3. THE CMS SHALL expose the key frontmatter fields required by current templates, including titles, dates, media paths, colors, and 3D-specific options when applicable
+4. THE CMS SHALL preserve compatibility with the existing Jekyll content model and output file locations
+5. THE editorial workflow SHALL avoid direct editing of generated output and SHALL write source content only
+6. THE integration SHALL support local/editorial preview well enough to validate content structure before publish

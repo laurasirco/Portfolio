@@ -1384,6 +1384,205 @@ div.blog-posts {
   margin: 0 auto;
 }
 
+.backlog-page {
+  width: min(980px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 10px 0 0;
+}
+
+.backlog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.backlog-entry {
+  display: block;
+  padding: 8px 0 76px;
+}
+
+.backlog-entry-date {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.backlog-entry-content {
+  min-width: 0;
+
+  h2 {
+    margin: 0 0 6px;
+    line-height: 0.95;
+    text-align: left;
+  }
+
+  p {
+    margin: 0 0 16px;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.backlog-entry-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0 0 20px;
+  text-align: left;
+}
+
+.backlog-entry-media {
+  margin-top: 16px;
+}
+
+.backlog-entry-media img,
+.backlog-entry-media video,
+.backlog-entry-media iframe {
+  width: 100%;
+  display: block;
+}
+
+.backlog-entry-media video {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.backlog-main-media {
+  max-width: min(100%, 420px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-inline-media {
+  display: block;
+  width: 100%;
+  margin: 20px 0 8px;
+}
+
+.backlog-phone-media {
+  max-width: min(100%, 360px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-pixel-media {
+  max-width: min(100%, 420px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #fff;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-entry-content img,
+.backlog-entry-media img {
+  height: auto;
+}
+
+.backlog-media-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+  margin: 20px 0 8px;
+  max-width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-media-row .backlog-inline-media {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.backlog-entry-content pre {
+  max-width: min(100%, 520px);
+  margin: 18px auto 20px;
+  padding: 14px 16px;
+  border: 1.5px solid rgba(1, 0, 2, 0.16);
+  background: rgba(255, 255, 255, 0.68);
+  overflow-x: auto;
+}
+
+.backlog-entry-content pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.backlog-entry-content code {
+  display: inline-block;
+  padding: 0.08em 0.4em 0.12em;
+  border: 1px solid rgba(1, 0, 2, 0.16);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 0.82em;
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+.backlog-entry-embed {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .backlog-page {
+    width: calc(100% - 28px);
+  }
+
+  .backlog-entry {
+    padding: 4px 0 60px;
+  }
+
+  .backlog-entry-content p {
+    max-width: 100%;
+  }
+
+  .backlog-main-media,
+  .backlog-phone-media,
+  .backlog-pixel-media,
+  .backlog-entry-content pre,
+  .backlog-media-row {
+    max-width: 100%;
+  }
+
+  .backlog-media-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .backlog-page {
+    width: calc(100% - 22px);
+  }
+
+  .backlog-entry {
+    padding: 2px 0 48px;
+  }
+
+  .backlog-entry-date,
+  .backlog-entry-content p code,
+  .backlog-entry-content code {
+    font-size: 11px;
+  }
+
+  .backlog-entry-content p {
+    font-size: 16px;
+  }
+}
+
 .sketchbook-groups {
   max-width: 1400px;
   width: min(1400px, calc(100% - 48px));
@@ -1491,6 +1690,12 @@ div.blog-posts {
     clamp(-4px, var(--random-offset-x, 0px), 4px),
     clamp(-4px, var(--random-offset-y, 0px), 4px)
   ) rotate(var(--random-rotate, 0deg)) scale(1);
+}
+
+.sketchbook-day-grid.playground-grid .playground-card[data-media-type='text'] {
+  height: auto;
+  min-height: calc(var(--card-unit) * var(--grid-row, 1));
+  max-height: none;
 }
 
 .sketchbook-day-grid.playground-grid .playground-card:nth-child(3n) {
@@ -1877,7 +2082,7 @@ video.playground-thumb {
   background-color: transparent;
   font-size: clamp(10px, 1.5vw, 16px);
   line-height: 1.3;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1886,7 +2091,8 @@ video.playground-thumb {
 
 .playground-card[data-media-type='text'] .playground-text-box {
   display: block;
-  overflow: hidden;
+  height: 100%;
+  overflow: visible;
   text-align: left;
   font-size: clamp(10px, 1.1vw, 13px);
   line-height: 1.35;

@@ -33,6 +33,8 @@ collections:
     permalink: /:collection/:name
   playground:
     output: false
+  backlog:
+    output: false
 
 #permalink: /:year/:month/:day/:title
 

@@ -9,7 +9,7 @@
 
 // ScrollSmoother Configuration
 const SMOOTH_SCROLL_ENABLED = true; // Enabled with correct structure (fixed elements outside wrapper)
-const SCROLL_SMOOTHER_SMOOTH = 1.5; // Smoothness (higher = smoother, 1 = default, 2 = very smooth)
+const SCROLL_SMOOTHER_SMOOTH = 0.65; // Lower = more responsive, less floaty
 const SCROLL_SMOOTHER_EFFECTS = true; // Enable data-speed and data-lag effects
 
 // Parallax Configuration
@@ -45,9 +45,14 @@ const MENU_SKEW_ANGLE = -8; // Skew angle in degrees (negative = italic-like sla
 // ============================================
 
 let smoother;
+let smoothRefreshTimer = null;
 
 function isAboutPage() {
   return window.location.pathname.includes('/about');
+}
+
+function isBacklogPage() {
+  return window.location.pathname.includes('/backlog');
 }
 
 function isTouchDevice() {
@@ -63,8 +68,8 @@ function shouldEnableSmoothScroll() {
     return false;
   }
 
-  // Preserve native scroll on About and touch devices.
-  if (isAboutPage() || isTouchDevice()) {
+  // Preserve native scroll on About, Backlog, and touch devices.
+  if (isAboutPage() || isBacklogPage() || isTouchDevice()) {
     return false;
   }
 
@@ -93,6 +98,53 @@ function initSmoothScroll() {
   });
 
   return smoother;
+}
+
+function scheduleSmoothScrollRefresh(delay = 0) {
+  if (typeof ScrollTrigger === 'undefined') {
+    return;
+  }
+
+  window.clearTimeout(smoothRefreshTimer);
+  smoothRefreshTimer = window.setTimeout(() => {
+    requestAnimationFrame(() => {
+      if (smoother && typeof smoother.refresh === 'function') {
+        smoother.refresh();
+      }
+      ScrollTrigger.refresh();
+    });
+  }, delay);
+}
+
+function bindSmoothScrollRefresh() {
+  if (typeof ScrollTrigger === 'undefined') {
+    return;
+  }
+
+  const mediaElements = document.querySelectorAll('img, video, iframe');
+
+  mediaElements.forEach((element) => {
+    if (element.tagName === 'IMG') {
+      if (element.complete) return;
+      element.addEventListener('load', () => scheduleSmoothScrollRefresh(0), { once: true });
+      element.addEventListener('error', () => scheduleSmoothScrollRefresh(0), { once: true });
+      return;
+    }
+
+    if (element.tagName === 'VIDEO') {
+      element.addEventListener('loadedmetadata', () => scheduleSmoothScrollRefresh(0), { once: true });
+      element.addEventListener('loadeddata', () => scheduleSmoothScrollRefresh(0), { once: true });
+      return;
+    }
+
+    element.addEventListener('load', () => scheduleSmoothScrollRefresh(0), { once: true });
+  });
+
+  window.addEventListener('load', () => {
+    scheduleSmoothScrollRefresh(0);
+    scheduleSmoothScrollRefresh(250);
+    scheduleSmoothScrollRefresh(1000);
+  }, { once: true });
 }
 
 // ============================================
@@ -363,6 +415,7 @@ function initParallaxAnimations() {
 
   // Initialize smooth scroll
   initSmoothScroll();
+  bindSmoothScrollRefresh();
   
   // Initialize menu hover animations
   initMenuHoverAnimations();
@@ -413,6 +466,8 @@ function initParallaxAnimations() {
       }
     );
   });
+
+  scheduleSmoothScrollRefresh(0);
 }
 
 // Initialize animations when DOM is ready

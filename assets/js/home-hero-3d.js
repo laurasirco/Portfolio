@@ -19,8 +19,17 @@ const WELCOME_HERO_3D_CONFIG = {
   model: {
     scaleDesktop: 3.88,
     scaleMobile: 4.28,
-    offsetDesktop: { x: 0, y: -0.9, z: 0 },
-    offsetMobile: { x: 0, y: -1.9, z: 0 },
+    offsetDesktop: { x: 0, y: -0.64, z: 0 },
+    offsetMobile: { x: 0, y: -1.54, z: 0 },
+    computerOffset: { x: 0, y: 0.06, z: 0 },
+    stateOffsetsY: {
+      morning: -0.095,
+      focus: -0.144,
+      distracted: -0.105,
+      late: -0.129,
+      chaotic: -0.095,
+      away: -0.03
+    },
     pointerTilt: {
       enabled: true,
       maxRotateX: 0.085,
@@ -43,6 +52,50 @@ const WELCOME_HERO_3D_CONFIG = {
       maxRotateZ: 0.12,
       maxRotateX: 0.012,
       maxRotateY: 0.018
+    },
+    idleMotion: {
+      swaySpeed: 0.16,
+      swayAmountY: 0.09,
+      swayAmountZ: 0.02,
+      bobSpeed: 0.38,
+      bobAmount: 0.004,
+      nodSpeed: 0.85,
+      nodAmount: 0.018,
+      nodAmountChaotic: 0.045,
+      loweredHeadEvening: -0.028,
+      loweredHeadNight: -0.055
+    },
+    focusMotion: {
+      swaySpeed: 0.23,
+      swayAmountY: 0,
+      swayAmountZ: 0.015,
+      bobSpeed: 0.23,
+      bobAmount: 0.003,
+      nodSpeed: 0.73,
+      nodAmount: 0.03,
+      screenLookY: 0.085
+    },
+    distractedMotion: {
+      swaySpeed: 0.43,
+      swayAmountY: 0,
+      swayAmountZ: 0.075,
+      bobSpeed: 0.93,
+      bobAmount: 0.004,
+      nodSpeed: 0.11,
+      nodAmount: 0.06
+    },
+    attention: {
+      focusReturnSeconds: 2,
+      mouseInterruptThreshold: 0.11,
+      dartIntervalMin: 0.22,
+      dartIntervalMax: 0.7,
+      dartRangeX: 0.22,
+      dartRangeY: 0.12
+    },
+    debug: {
+      modeOverride: 'auto',
+      currentState: 'focus',
+      currentHour: '00:00'
     }
   },
   lights: {
@@ -119,10 +172,18 @@ class WelcomeHero3D {
     this.screenGlowLightGroup = null;
     this.screenGlowRayGroup = null;
     this.computerObject = null;
+    this.computerBasePosition = null;
     this.screenGlowTarget = new THREE.Object3D();
     this.pointerTarget = new THREE.Vector2(0, 0);
     this.pointerCurrent = new THREE.Vector2(0, 0);
     this.pupilPointerCurrent = new THREE.Vector2(0, 0);
+    this.screenAttentionTarget = new THREE.Vector2(0, 0.04);
+    this.screenAttentionCurrent = new THREE.Vector2(0, 0.04);
+    this.pointerVelocity = new THREE.Vector2(0, 0);
+    this.lastPointerEventTime = 0;
+    this.mouseAttentionUntil = 0;
+    this.nextScreenDartAt = 0;
+    this.currentBehaviorMode = 'focus';
     this.eyeWhiteMesh = null;
     this.browMeshes = [];
     this.browBaseTransforms = new Map();
@@ -610,7 +671,19 @@ class WelcomeHero3D {
     if (computer) {
       this.staticRoot.attach(computer);
       this.computerObject = computer;
+      this.computerBasePosition = computer.position.clone();
+      this.updateComputerOffset();
     }
+  }
+
+  updateComputerOffset() {
+    if (!this.computerObject || !this.computerBasePosition) return;
+    const offset = WELCOME_HERO_3D_CONFIG.model.computerOffset;
+    this.computerObject.position.set(
+      this.computerBasePosition.x + offset.x,
+      this.computerBasePosition.y + offset.y,
+      this.computerBasePosition.z + offset.z
+    );
   }
 
   createGodRayFan(color, radius, length, opacity, spread, sourceWidth) {
@@ -878,20 +951,186 @@ class WelcomeHero3D {
 
   bindPointer() {
     this.handlePointerMove = (event) => {
+      const now = performance.now() * 0.001;
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = (event.clientY / window.innerHeight) * 2 - 1;
-      this.pointerTarget.set(
-        THREE.MathUtils.clamp(x, -1, 1),
-        THREE.MathUtils.clamp(y, -1, 1)
-      );
+      const clampedX = THREE.MathUtils.clamp(x, -1, 1);
+      const clampedY = THREE.MathUtils.clamp(y, -1, 1);
+      const previousX = this.pointerTarget.x;
+      const previousY = this.pointerTarget.y;
+      this.pointerTarget.set(clampedX, clampedY);
+
+      if (this.lastPointerEventTime > 0) {
+        const deltaTime = Math.max(now - this.lastPointerEventTime, 1 / 120);
+        this.pointerVelocity.set(
+          (clampedX - previousX) / deltaTime,
+          (clampedY - previousY) / deltaTime
+        );
+      }
+      this.lastPointerEventTime = now;
     };
 
     this.handlePointerLeave = () => {
       this.pointerTarget.set(0, 0);
+      this.pointerVelocity.set(0, 0);
     };
 
     window.addEventListener('mousemove', this.handlePointerMove, { passive: true });
     window.addEventListener('mouseleave', this.handlePointerLeave, { passive: true });
+  }
+
+  getCurrentHour() {
+    const now = new Date();
+    return now.getHours() + now.getMinutes() / 60;
+  }
+
+  getBehaviorProfile(hour = this.getCurrentHour()) {
+    const override = WELCOME_HERO_3D_CONFIG.model.debug?.modeOverride;
+    if (override && override !== 'auto') {
+      hour = {
+        focus: 10,
+        distracted: 18,
+        late: 21,
+        chaotic: 22.5,
+        away: 23.5,
+        morning: 8.5
+      }[override] ?? hour;
+    }
+
+    if (hour >= 23 || hour < 8) {
+      return {
+        mode: 'away',
+        mouseWeight: 0,
+        screenWeight: 0,
+        bodyAttention: 0,
+        usesScreenDarts: false,
+        nodAmount: 0,
+        loweredHead: 0,
+        stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.away
+      };
+    }
+
+    if (hour >= 22 && hour < 23) {
+      return {
+        mode: 'chaotic',
+        mouseWeight: 0,
+        screenWeight: 1,
+        bodyAttention: 0,
+        usesScreenDarts: true,
+        nodAmount: WELCOME_HERO_3D_CONFIG.model.idleMotion.nodAmountChaotic,
+        loweredHead: WELCOME_HERO_3D_CONFIG.model.idleMotion.loweredHeadNight,
+        stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.chaotic
+      };
+    }
+
+    if (hour >= 20) {
+      return {
+        mode: 'late',
+        mouseWeight: 0.75,
+        screenWeight: 0.25,
+        bodyAttention: 0.62,
+        usesScreenDarts: false,
+        nodAmount: WELCOME_HERO_3D_CONFIG.model.idleMotion.nodAmount * 1.15,
+        loweredHead: WELCOME_HERO_3D_CONFIG.model.idleMotion.loweredHeadEvening,
+        stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.late
+      };
+    }
+
+    if (hour >= 17) {
+      return {
+        mode: 'distracted',
+        mouseWeight: 0.92,
+        screenWeight: 0.08,
+        bodyAttention: 0.88,
+        usesScreenDarts: false,
+        nodAmount: WELCOME_HERO_3D_CONFIG.model.distractedMotion.nodAmount,
+        loweredHead: 0,
+        stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.distracted
+      };
+    }
+
+    if (hour >= 9) {
+      return {
+        mode: 'focus',
+        mouseWeight: 0.08,
+        screenWeight: 0.92,
+        bodyAttention: 0.12,
+        usesScreenDarts: true,
+        nodAmount: WELCOME_HERO_3D_CONFIG.model.focusMotion.nodAmount,
+        loweredHead: 0,
+        stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.focus
+      };
+    }
+
+    return {
+      mode: 'morning',
+      mouseWeight: 0.45,
+      screenWeight: 0.55,
+      bodyAttention: 0.45,
+      usesScreenDarts: false,
+      nodAmount: WELCOME_HERO_3D_CONFIG.model.idleMotion.nodAmount * 0.8,
+      loweredHead: 0,
+      stateOffsetY: WELCOME_HERO_3D_CONFIG.model.stateOffsetsY.morning
+    };
+  }
+
+  scheduleScreenDart(nowSeconds) {
+    const attentionConfig = WELCOME_HERO_3D_CONFIG.model.attention;
+    const focusMotion = WELCOME_HERO_3D_CONFIG.model.focusMotion;
+    const stepX = 0.055;
+    const stepY = 0.04;
+    const randomX = THREE.MathUtils.randFloatSpread(attentionConfig.dartRangeX * 2);
+    const randomY = THREE.MathUtils.randFloatSpread(attentionConfig.dartRangeY * 2);
+
+    this.screenAttentionTarget.set(
+      Math.round(randomX / stepX) * stepX,
+      Math.round(randomY / stepY) * stepY + focusMotion.screenLookY
+    );
+    this.nextScreenDartAt =
+      nowSeconds + THREE.MathUtils.randFloat(attentionConfig.dartIntervalMin, attentionConfig.dartIntervalMax);
+  }
+
+  updateAttentionState(elapsed, profile) {
+    const attentionConfig = WELCOME_HERO_3D_CONFIG.model.attention;
+    const pointerStrength = this.pointerVelocity.length();
+
+    if (profile.mode === 'focus' && pointerStrength > attentionConfig.mouseInterruptThreshold) {
+      this.mouseAttentionUntil = elapsed + attentionConfig.focusReturnSeconds;
+    }
+
+    const shouldUseMouse =
+      profile.mode === 'distracted' ||
+      profile.mode === 'late' ||
+      profile.mode === 'morning' ||
+      (profile.mode === 'focus' && elapsed < this.mouseAttentionUntil);
+
+    if (profile.usesScreenDarts && elapsed >= this.nextScreenDartAt) {
+      this.scheduleScreenDart(elapsed);
+    }
+
+    const screenSmoothing = profile.usesScreenDarts ? 0.9 : 0.12;
+    this.screenAttentionCurrent.lerp(this.screenAttentionTarget, screenSmoothing);
+
+    const effectiveMouseWeight = shouldUseMouse ? profile.mouseWeight : 0;
+    const effectiveScreenWeight = shouldUseMouse ? 1 - effectiveMouseWeight : 1;
+
+    const desiredX =
+      this.screenAttentionCurrent.x * effectiveScreenWeight +
+      this.pointerTarget.x * effectiveMouseWeight;
+    const desiredY =
+      this.screenAttentionCurrent.y * effectiveScreenWeight +
+      this.pointerTarget.y * effectiveMouseWeight;
+
+    const bodySmoothing = shouldUseMouse ? 0.12 : 0.055;
+    const eyeSmoothing = profile.usesScreenDarts && !shouldUseMouse ? 0.9 : 0.22;
+
+    this.pointerCurrent.lerp(new THREE.Vector2(desiredX, desiredY), bodySmoothing);
+    this.pupilPointerCurrent.lerp(new THREE.Vector2(desiredX, desiredY), eyeSmoothing);
+    this.pointerVelocity.multiplyScalar(0.82);
+  }
+
+  easedSideToSide(time, speed) {
+    return Math.sin(time * Math.PI * 2 * speed);
   }
 
   bindStickerSmile() {
@@ -935,36 +1174,63 @@ class WelcomeHero3D {
     this.animationFrame = window.requestAnimationFrame(() => this.animate());
     if (!this.renderer || !this.scene || !this.camera) return;
 
-    this.clock.getElapsedTime();
-    this.updatePointerState();
-    this.updatePointerTilt();
-    this.updatePupilFollow();
+    const elapsed = this.clock.getElapsedTime();
+    const profile = this.getBehaviorProfile();
+    const now = new Date();
+
+    WELCOME_HERO_3D_CONFIG.model.debug.currentState = profile.mode;
+    WELCOME_HERO_3D_CONFIG.model.debug.currentHour = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+
+    this.modelRoot.visible = true;
+    this.staticRoot.visible = true;
+    this.characterRoot.visible = profile.mode !== 'away';
+    if (profile.mode === 'away') {
+      this.renderer.render(this.scene, this.camera);
+      return;
+    }
+
+    this.currentBehaviorMode = profile.mode;
+    this.updateAttentionState(elapsed, profile);
+    this.updatePointerTilt(elapsed, profile);
+    this.updatePupilFollow(profile);
     this.updateBrows();
     this.updateSmile();
     this.renderer.render(this.scene, this.camera);
   }
 
-  updatePointerState() {
-    const tiltConfig = WELCOME_HERO_3D_CONFIG.model.pointerTilt;
-    const tiltSmoothing = tiltConfig?.smoothing ?? 0.04;
-    const pupilSmoothing = WELCOME_HERO_3D_CONFIG.model.pupilFollow?.smoothing ?? 0.16;
-    this.pointerCurrent.lerp(this.pointerTarget, tiltSmoothing);
-    this.pupilPointerCurrent.lerp(this.pointerTarget, pupilSmoothing);
-  }
-
-  updatePointerTilt() {
+  updatePointerTilt(elapsed, profile) {
     const tiltConfig = WELCOME_HERO_3D_CONFIG.model.pointerTilt;
     if (!tiltConfig?.enabled) return;
-    this.characterRoot.rotation.x = this.pointerCurrent.y * tiltConfig.maxRotateX;
-    this.characterRoot.rotation.y = this.pointerCurrent.x * tiltConfig.maxRotateY;
+
+    const motionConfig = profile.mode === 'focus'
+      ? WELCOME_HERO_3D_CONFIG.model.focusMotion
+      : profile.mode === 'distracted'
+        ? WELCOME_HERO_3D_CONFIG.model.distractedMotion
+      : WELCOME_HERO_3D_CONFIG.model.idleMotion;
+    const sway = this.easedSideToSide(elapsed, motionConfig.swaySpeed);
+    const bob = Math.sin(elapsed * Math.PI * 2 * motionConfig.bobSpeed) * motionConfig.bobAmount;
+    const nod = Math.sin(elapsed * Math.PI * 2 * motionConfig.nodSpeed) * profile.nodAmount;
+    const attentionWeight = profile.bodyAttention;
+
+    this.characterRoot.position.y = bob + profile.loweredHead + (profile.stateOffsetY || 0);
+    this.characterRoot.rotation.x =
+      nod + this.pointerCurrent.y * tiltConfig.maxRotateX * attentionWeight;
+    this.characterRoot.rotation.y =
+      sway * motionConfig.swayAmountY + this.pointerCurrent.x * tiltConfig.maxRotateY * attentionWeight;
+    this.characterRoot.rotation.z = sway * motionConfig.swayAmountZ;
   }
 
-  updatePupilFollow() {
+  updatePupilFollow(profile) {
     const pupilConfig = WELCOME_HERO_3D_CONFIG.model.pupilFollow;
     if (!pupilConfig?.enabled || this.pupilMeshes.length === 0) return;
 
     const pointerX = this.pupilPointerCurrent.x;
     const pointerY = this.pupilPointerCurrent.y;
+    const eyeWeight = profile.mode === 'focus' ? 0.85 : 1;
 
     this.pupilMeshes.forEach((mesh) => {
       const basePosition = this.pupilBasePositions.get(mesh.uuid);
@@ -975,8 +1241,8 @@ class WelcomeHero3D {
       const crossEyeOffset = -pointerX * sideFactor * pupilConfig.crossEyeStrength;
       mesh.position.x =
         basePosition.x +
-        (pointerX + crossEyeOffset) * pupilConfig.maxOffsetX;
-      mesh.position.y = basePosition.y - pointerY * pupilConfig.maxOffsetY;
+        (pointerX + crossEyeOffset) * pupilConfig.maxOffsetX * eyeWeight;
+      mesh.position.y = basePosition.y - pointerY * pupilConfig.maxOffsetY * eyeWeight;
     });
   }
 
@@ -1014,7 +1280,7 @@ function initWelcomeHero3D() {
   if (!container) return;
   if (container.dataset.heroInitialized === 'true') return;
   container.dataset.heroInitialized = 'true';
-  new WelcomeHero3D(container);
+  window.__welcomeHero3D = new WelcomeHero3D(container);
 }
 
 if (document.readyState === 'loading') {

@@ -449,6 +449,10 @@ function fitSketchbookTextCards() {
   if (!textBoxes.length) return;
 
   textBoxes.forEach((box) => {
+    const card = box.closest('.playground-card');
+    if (!card) return;
+
+    card.style.height = '';
     const MIN = 4;
     const MAX = Math.max(8, Math.min(16, Math.floor(box.clientHeight * 0.2)));
 
@@ -478,6 +482,17 @@ function fitSketchbookTextCards() {
     }
 
     box.style.fontSize = `${best.toFixed(2)}px`;
+
+    const computedStyles = window.getComputedStyle(box);
+    const paddingY =
+      (parseFloat(computedStyles.paddingTop) || 0) +
+      (parseFloat(computedStyles.paddingBottom) || 0);
+    const requiredHeight = Math.ceil(box.scrollHeight + paddingY);
+    const currentHeight = Math.ceil(card.getBoundingClientRect().height);
+
+    if (requiredHeight > currentHeight) {
+      card.style.height = `${requiredHeight}px`;
+    }
   });
 }
 
