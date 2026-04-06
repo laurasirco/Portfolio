@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironmentCustom } from './lib/RoomEnvironmentCustom.js';
-import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.20/+esm';
 
 const WELCOME_HERO_3D_CONFIG = {
   camera: {
@@ -197,7 +196,6 @@ class WelcomeHero3D {
     this.pupilMetadata = new Map();
     this.keyLight = null;
     this.shadowTarget = new THREE.Object3D();
-    this.debugGUI = null;
     this.animationFrame = null;
     this.resizeObserver = null;
 
@@ -299,7 +297,6 @@ class WelcomeHero3D {
         this.addScreenGlow();
         this.fitModelToViewport();
         this.updateShadowTarget();
-        this.initDebugGUI();
       },
       undefined,
       (error) => {
@@ -666,53 +663,6 @@ class WelcomeHero3D {
 
   rebuildScreenGlow() {
     this.addScreenGlow();
-  }
-
-  initDebugGUI() {
-    if (this.debugGUI) return;
-
-    const gui = new GUI({ title: 'Welcome 3D Debug' });
-    gui.close();
-    this.debugGUI = gui;
-
-    const refreshGlow = () => this.rebuildScreenGlow();
-
-    const stateFolder = gui.addFolder('Behavior');
-    stateFolder
-      .add(WELCOME_HERO_3D_CONFIG.model.debug, 'modeOverride', ['auto', 'focus', 'distracted', 'late', 'chaotic', 'away', 'morning'])
-      .name('state');
-    stateFolder.add(WELCOME_HERO_3D_CONFIG.model.debug, 'currentState').name('current').listen();
-    stateFolder.add(WELCOME_HERO_3D_CONFIG.model.debug, 'currentHour').name('hour').listen();
-    stateFolder.add(WELCOME_HERO_3D_CONFIG.model.attention, 'focusReturnSeconds', 0.4, 4, 0.1);
-    stateFolder.add(WELCOME_HERO_3D_CONFIG.model.attention, 'mouseInterruptThreshold', 0.01, 0.4, 0.01);
-
-    const heightFolder = gui.addFolder('State Height');
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'morning', -0.2, 0.2, 0.001);
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'focus', -0.2, 0.2, 0.001);
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'distracted', -0.2, 0.2, 0.001);
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'late', -0.2, 0.2, 0.001);
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'chaotic', -0.2, 0.2, 0.001);
-    heightFolder.add(WELCOME_HERO_3D_CONFIG.model.stateOffsetsY, 'away', -0.2, 0.2, 0.001);
-
-    const computerFolder = gui.addFolder('Computer');
-    computerFolder.add(WELCOME_HERO_3D_CONFIG.model.computerOffset, 'x', -0.5, 0.5, 0.001).onChange(() => this.updateComputerOffset());
-    computerFolder.add(WELCOME_HERO_3D_CONFIG.model.computerOffset, 'y', -0.5, 0.5, 0.001).onChange(() => this.updateComputerOffset());
-    computerFolder.add(WELCOME_HERO_3D_CONFIG.model.computerOffset, 'z', -0.5, 0.5, 0.001).onChange(() => this.updateComputerOffset());
-
-    const heroFolder = gui.addFolder('Hero Position');
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetDesktop, 'x', -1.5, 1.5, 0.001).name('desktop x').onChange(() => this.fitModelToViewport());
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetDesktop, 'y', -2.5, 0.5, 0.001).name('desktop y').onChange(() => this.fitModelToViewport());
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetDesktop, 'z', -1.5, 1.5, 0.001).name('desktop z').onChange(() => this.fitModelToViewport());
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetMobile, 'x', -1.5, 1.5, 0.001).name('mobile x').onChange(() => this.fitModelToViewport());
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetMobile, 'y', -3, 0.5, 0.001).name('mobile y').onChange(() => this.fitModelToViewport());
-    heroFolder.add(WELCOME_HERO_3D_CONFIG.model.offsetMobile, 'z', -1.5, 1.5, 0.001).name('mobile z').onChange(() => this.fitModelToViewport());
-
-    const glowFolder = gui.addFolder('Glow');
-    glowFolder.add(WELCOME_HERO_3D_CONFIG.lights.screenGlow, 'intensity', 0, 5, 0.01).onChange(refreshGlow);
-    glowFolder.add(WELCOME_HERO_3D_CONFIG.lights.screenGlow, 'fillIntensity', 0, 6, 0.01).onChange(refreshGlow);
-    glowFolder.add(WELCOME_HERO_3D_CONFIG.lights.screenGlow.rayOffset, 'x', -1, 1, 0.01).name('ray x').onChange(refreshGlow);
-    glowFolder.add(WELCOME_HERO_3D_CONFIG.lights.screenGlow.rayOffset, 'y', -1, 1, 0.01).name('ray y').onChange(refreshGlow);
-    glowFolder.add(WELCOME_HERO_3D_CONFIG.lights.screenGlow.rayOffset, 'z', -1, 1, 0.01).name('ray z').onChange(refreshGlow);
   }
 
   extractStaticObjects() {
