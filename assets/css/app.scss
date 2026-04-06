@@ -2812,22 +2812,22 @@ video.playground-thumb {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  min-height: calc(100dvh - 180px);
+  min-height: calc(100vh - 180px);
   position: relative;
   padding: 20px 40px 80px;
 
   @media (max-width: 768px) {
-    min-height: calc(100dvh - 150px);
+    min-height: calc(100vh - 150px);
     padding: 18px 24px 64px;
   }
 
   @media (max-width: 480px) {
-    min-height: calc(100dvh - 135px);
+    min-height: calc(100vh - 135px);
     padding: 14px 16px 54px;
   }
 
   @media (max-width: 360px) {
-    min-height: calc(100dvh - 120px);
+    min-height: calc(100vh - 120px);
     padding: 12px 12px 48px;
   }
 }
@@ -2855,17 +2855,17 @@ video.playground-thumb {
   width: min(100%, 1500px);
   height: min(100%, 980px);
   min-height: 420px;
-  max-height: calc(100dvh - 140px);
+  max-height: calc(100vh - 140px);
   opacity: 1;
 
   @media (max-width: 768px) {
     min-height: 360px;
-    max-height: calc(100dvh - 120px);
+    max-height: calc(100vh - 120px);
   }
 
   @media (max-width: 480px) {
     min-height: 300px;
-    max-height: calc(100dvh - 108px);
+    max-height: calc(100vh - 108px);
   }
 }
 
@@ -2877,24 +2877,24 @@ video.playground-thumb {
 }
 
 body.native-scroll .welcome-section {
-  min-height: calc(100dvh - 120px - 70px - env(safe-area-inset-bottom, 0px));
+  min-height: calc(100vh - 120px - 70px - env(safe-area-inset-bottom, 0px));
 }
 
 @media (max-width: 768px) {
   body.native-scroll .welcome-section {
-    min-height: calc(100dvh - 100px - 56px - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 100px - 56px - env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 480px) {
   body.native-scroll .welcome-section {
-    min-height: calc(100dvh - 90px - 52px - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 90px - 52px - env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 360px) {
   body.native-scroll .welcome-section {
-    min-height: calc(100dvh - 80px - 48px - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 80px - 48px - env(safe-area-inset-bottom, 0px));
   }
 }
 
