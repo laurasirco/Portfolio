@@ -27,6 +27,14 @@
                     {% if item.media contains "JPG" or item.media contains "JPEG" or item.media contains "HEIC" %}
                         {% assign media_classes = media_classes | append: " backlog-phone-media" %}
                     {% endif %}
+                    {% if item.media_width == "wide" %}
+                        {% assign media_classes = media_classes | append: " backlog-wide" %}
+                    {% elsif item.media_width == "xwide" %}
+                        {% assign media_classes = media_classes | append: " backlog-xwide" %}
+                    {% endif %}
+                    {% if item.media_orientation == "horizontal" %}
+                        {% assign media_classes = media_classes | append: " backlog-horizontal" %}
+                    {% endif %}
                     <img class="{{ media_classes }}" src="{{ item.media }}" alt="{{ item.title }}">
                 {% elsif item.media_type == "embed" %}
                     <div class="backlog-entry-embed">

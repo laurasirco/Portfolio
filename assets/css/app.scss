@@ -1457,7 +1457,7 @@ div.blog-posts {
 }
 
 .backlog-main-media {
-  max-width: min(100%, 420px);
+  max-width: min(100%, 560px);
   margin-left: auto;
   margin-right: auto;
 }
@@ -1469,13 +1469,13 @@ div.blog-posts {
 }
 
 .backlog-phone-media {
-  max-width: min(100%, 360px);
+  max-width: min(100%, 460px);
   margin-left: auto;
   margin-right: auto;
 }
 
 .backlog-pixel-media {
-  max-width: min(100%, 420px);
+  max-width: min(100%, 560px);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   background: #fff;
@@ -1486,6 +1486,34 @@ div.blog-posts {
 .backlog-entry-content img,
 .backlog-entry-media img {
   height: auto;
+}
+
+/* Backlog media width modifiers */
+.backlog-main-media.backlog-wide,
+.backlog-inline-media.backlog-wide,
+.backlog-phone-media.backlog-wide,
+.backlog-pixel-media.backlog-wide {
+  max-width: min(100%, 620px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-main-media.backlog-xwide,
+.backlog-inline-media.backlog-xwide,
+.backlog-phone-media.backlog-xwide,
+.backlog-pixel-media.backlog-xwide {
+  max-width: min(100%, 760px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.backlog-main-media.backlog-horizontal,
+.backlog-inline-media.backlog-horizontal,
+.backlog-phone-media.backlog-horizontal,
+.backlog-pixel-media.backlog-horizontal {
+  max-width: min(100%, 820px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .backlog-media-row {
